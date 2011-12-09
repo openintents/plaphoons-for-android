@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="app_name">Plaphoons</string>
+    <string name="preference_application">Preferences</string>
+    <string name="preference_showapps_title">Show apps</string>
+    <string name="preference_showapps_summary">Add a page with apps</string>
+    <string name="preference_plafile_title">Filename of .pla file</string>
+    <string name="preference_plafile_summary">without path</string>
+    <string name="preference_pladir_title">Path to .pla file</string>
+    <string name="preference_pladir_summary">leave empty for default value (i.e. root directory on sdcard)</string>
+    
+</resources>
