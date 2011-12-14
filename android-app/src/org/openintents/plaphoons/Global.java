@@ -1,4 +1,6 @@
 package org.openintents.plaphoons;
+
+import org.openintents.plaphoons.sample.R;
 /*
  * Projecte Fressa a JAVA
  * Global.java

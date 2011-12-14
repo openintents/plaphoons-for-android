@@ -8,6 +8,7 @@ import java.io.Reader;
 
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
+import org.openintents.plaphoons.sample.R;
 
 import android.graphics.Color;
 
@@ -16,8 +17,7 @@ public class PlaFileParser {
 	// NomFitxerSol){
 	Tools tool = new Tools();
 
-	public TalkInfoCollection parseFile(String filename) throws IOException {
-
+	public TalkInfoCollection parseFile(String filename) throws IOException {		
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 
 		TalkInfoCollection tiCollection = parseHeader(br);

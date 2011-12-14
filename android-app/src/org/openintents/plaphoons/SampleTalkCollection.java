@@ -2,7 +2,7 @@ package org.openintents.plaphoons;
 
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
-import org.openintents.plaphoons.R;
+import org.openintents.plaphoons.sample.R;
 
 import android.graphics.Color;
 
@@ -40,7 +40,7 @@ public class SampleTalkCollection {
 						new TalkInfo() }, //
 
 				new TalkInfo[] { new TalkInfo("Maison", Color.MAGENTA, R.drawable.maison), //
-						new TalkInfo("Ecole", "Ã©cole", Color.MAGENTA, null, R.drawable.ecole), //
+						new TalkInfo("Ecole", "école", Color.MAGENTA, null, R.drawable.ecole), //
 						new TalkInfo("Piscine", Color.MAGENTA, R.drawable.nager1), //
 						new TalkInfo("Cartable", Color.MAGENTA, R.drawable.sac_a_dos), //
 						new TalkInfo("Cahier de Communication", Color.MAGENTA, R.drawable.tableau_de_communication), //
@@ -50,7 +50,7 @@ public class SampleTalkCollection {
 						new TalkInfo("Stop",Color.BLACK, R.drawable.arreter), //
 						new TalkInfo("Merci", Color.BLACK, R.drawable.merci), //
 						new TalkInfo("Casque", Color.BLACK, R.drawable.casque), //
-						new TalkInfo("Toilette", "Je voudrais aller Ã  la toilette", Color.BLACK, null, R.drawable.toilette2), //
+						new TalkInfo("Toilette", "Je voudrais aller à  la toilette", Color.BLACK, null, R.drawable.toilette2), //
 						new TalkInfo() }
 
 		);
@@ -91,7 +91,7 @@ public class SampleTalkCollection {
 	boire.setInfos(
 			new TalkInfo[] {
 					new TalkInfo("Boire","Je voudrais boire", Color.BLACK, null, R.drawable.boire1), //
-					new TalkInfo("Jus Ã  la Fraise", "un jus Ã  la Fraise"), //
+					new TalkInfo("Jus à  la Fraise", "un jus Ã  la Fraise"), //
 					new TalkInfo(), //
 					new TalkInfo(), //
 					new TalkInfo(), //

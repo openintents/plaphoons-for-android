@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionCode="1"
-	android:versionName="1.0" package="org.openintents.plaphoons">
-	<uses-sdk android:targetSdkVersion="11" android:minSdkVersion="11"/>
+	android:versionCode="3"
+	android:versionName="1.1.1" package="org.openintents.plaphoons.sample">
+	<uses-sdk android:targetSdkVersion="10" android:minSdkVersion="6"/>
 
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:hardwareAccelerated="true" android:theme="@android:style/Theme.Holo.Light"
-		>
+	<application android:icon="@drawable/icon" android:label="@string/app_name"		
+		android:hardwareAccelerated="true" android:theme="@android:style/Theme.Holo.Light">
 		<activity android:name="org.openintents.plaphoons.ui.MainActivity" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -18,6 +17,6 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-
+		<activity android:name="org.openintents.plaphoons.ui.PreferencesActivity" />		
 	</application>
 </manifest>

@@ -1,6 +1,6 @@
 package org.openintents.plaphoons.ui.widget;
 
-import org.openintents.plaphoons.R;
+import org.openintents.plaphoons.sample.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;

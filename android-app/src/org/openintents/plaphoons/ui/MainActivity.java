@@ -16,29 +16,31 @@
 
 package org.openintents.plaphoons.ui;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import org.openintents.plaphoons.Log;
 import org.openintents.plaphoons.PlaFileParser;
+import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.SampleTalkCollection;
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
-import org.openintents.plaphoons.R;
 import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +49,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnInitListener {
 
@@ -56,75 +61,77 @@ public class MainActivity extends Activity implements OnInitListener {
 	private View mActionBarView;
 	private String[] mToggleLabels = { "Show Titles", "Hide Titles" };
 	private int mLabelIndex = 1;
-	private int mThemeId = -1;
 
 	private TalkInfoCollection mPanel;
-	private final int REQUEST_CODE_DATA_CHECK = 1000;
-	private final int REQUEST_CODE_PICK_FILE = 2000;
+	private static final int REQUEST_CODE_DATA_CHECK = 1000;
+	private static final int REQUEST_CODE_PREFERENCES = 2000;
+
 	private TextToSpeech mTts;
 	private PlaFileParser mParser;
 	private String mPlaRootDir;
+	private String mPlaFilename;
+	private String mCurrentPlaFilename;
+	private boolean mUseSample;
+	private ArrayList<String> mParentStack = new ArrayList<String>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null
-				&& savedInstanceState.getInt("theme", -1) != -1) {
-			mThemeId = savedInstanceState.getInt("theme");
-			this.setTheme(mThemeId);
-		}
-
-		setContentView(R.layout.main);
-
-		getActionBar().hide();
-
-		View v = findViewById(R.id.talker_layout);
-		// TODO full screen on phones
-		v.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-
-		mPanel = SampleTalkCollection.acceuil;
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.main);
+		
+//		// TODO full screen on phones
+//		if (Build.VERSION.SDK_INT >= 11){
+//			setContentView(R.layout.main);
+//			HoneycombHelper.fullScreen(this);
+//			
+//		} else {
+//			requestWindowFeature(Window.FEATURE_NO_TITLE);
+//	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+//	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//	        setContentView(R.layout.main);
+//		}
+		
+		
 
 		mParser = new PlaFileParser();
+		setValuesFromSavedInstanceState(savedInstanceState);
 
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, REQUEST_CODE_DATA_CHECK);
+	}
+
+	private void setValuesFromSavedInstanceState(Bundle savedInstanceState) {
+		// If talk panel is not saved to the savedInstanceState,
+		// 0 is returned by default.
+		if (savedInstanceState != null) {
+			mCurrentPlaFilename = savedInstanceState
+					.getString("currentPlaFile");
+			mParentStack = savedInstanceState.getStringArrayList("parentStack");
+		}
+
+	}
+
+	private void setValuesFromPreferences() {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 
 		// read .pla file
 		mPlaRootDir = prefs.getString("pladir", Environment
 				.getExternalStorageDirectory().getAbsolutePath());
-		String plaFilename = prefs.getString("plafile", null);
-
-		if (plaFilename == null || plaFilename.length() == 0) {
-			
-			// FIXME 
-			Intent i = new Intent(this, PreferencesActivity.class);
-			startActivity(i);
-						
-		} else {
-
-			try {
-				mPanel = mParser.parseFile(plaFilename);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// If talk panel is not saved to the savedInstanceState,
-			// 0 is returned by default.
-			if (savedInstanceState != null) {
-				String talkPanel = savedInstanceState.getString("talkpanel");
-				// findTalkInfoCollection(talkPanel);
-			}
-
-			Intent checkIntent = new Intent();
-			checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-			startActivityForResult(checkIntent, REQUEST_CODE_DATA_CHECK);
-		}
+		mPlaFilename = prefs.getString("plafile", null);
+		mUseSample = prefs.getBoolean("usesample", true);
 	}
 
-	public void open(final TalkInfoCollection tiCollection,
+	public void showPanel(final TalkInfoCollection tiCollection,
 			TalkInfoCollection parent) {
+
+		Log.v("show " + tiCollection);
 
 		/* Find viewGroup defined in main.xml */
 		SquareGridLayout viewGroup = (SquareGridLayout) findViewById(R.id.talker_layout);
@@ -159,19 +166,17 @@ public class MainActivity extends Activity implements OnInitListener {
 						}
 
 						if (talkInfo.child != null) {
-							MainActivity.this
-									.open(talkInfo.child, tiCollection);
+							// handle click on sample
+							// TODO cache children and handle here as well
+							MainActivity.this.showPanel(talkInfo.child,
+									tiCollection);
+
 						} else if (talkInfo.childFilename != null
 								&& talkInfo.childFilename.length() > 0) {
-							try {
-								TalkInfoCollection child = mParser
-										.parseFile(mPlaRootDir + "/"
-												+ talkInfo.childFilename);
-								MainActivity.this.open(child, tiCollection);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+
+							mParentStack.add(mCurrentPlaFilename);
+							mCurrentPlaFilename = talkInfo.childFilename;
+							openPanel();
 
 						}
 					}
@@ -199,15 +204,74 @@ public class MainActivity extends Activity implements OnInitListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 
-		case R.id.open:
-			Intent intent = new Intent(
-					"org.openintents.intent.action.PICK_FILE");
+		case R.id.preferences:
+			Intent intent = new Intent(this, PreferencesActivity.class);
+			startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
 
 			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setValuesFromPreferences();
+
+		// TODO decide whether to show or open the panel
+		openPanel();
+	}
+
+	private void openPanel() {
+		Log.v("openPanel");
+
+		new AsyncTask<TalkInfoCollection, Void, TalkInfoCollection>() {
+
+			@Override
+			protected TalkInfoCollection doInBackground(
+					TalkInfoCollection... params) {
+
+				if (mCurrentPlaFilename == null) {
+					mCurrentPlaFilename = mPlaFilename;
+				}
+
+				TalkInfoCollection panel = null;
+
+				if (mUseSample || TextUtils.isEmpty(mCurrentPlaFilename)) {
+					panel = SampleTalkCollection.acceuil;
+
+				} else {
+
+					String fullFilePath = mPlaRootDir + "/"
+							+ mCurrentPlaFilename;
+					Log.v("open " + fullFilePath);
+
+					try {
+						panel = mParser.parseFile(fullFilePath);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				return panel;
+			}
+
+			protected void onPostExecute(TalkInfoCollection result) {
+				if (result == null) {
+					Toast.makeText(MainActivity.this,
+							R.string.parsing_pla_file_failed, Toast.LENGTH_LONG)
+							.show();
+				} else {
+					mPanel = result;
+					showPanel(mPanel, null);
+				}
+			};
+
+		}.execute();
+
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -222,17 +286,11 @@ public class MainActivity extends Activity implements OnInitListener {
 						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				startActivity(installIntent);
 			}
+		} else if (requestCode == REQUEST_CODE_PREFERENCES) {
+			setValuesFromPreferences();
+			mCurrentPlaFilename = null;
+			openPanel();
 		}
-	}
-
-	PendingIntent getDialogPendingIntent(String dialogText) {
-		return PendingIntent.getActivity(
-				this,
-				dialogText.hashCode(), // Otherwise previous PendingIntents with
-										// the same
-										// requestCode may be overwritten.
-				new Intent(ACTION_DIALOG).putExtra(Intent.EXTRA_TEXT,
-						dialogText).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0);
 	}
 
 	@Override
@@ -244,14 +302,14 @@ public class MainActivity extends Activity implements OnInitListener {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt("theme", mThemeId);
+		outState.putString("currentPlaFile", mCurrentPlaFilename);
+		outState.putStringArrayList("parentStack", mParentStack);
 	}
 
 	@Override
 	public void onInit(int status) {
 		if (mTts.isLanguageAvailable(Locale.FRANCE) >= 0) {
 			mTts.setLanguage(Locale.FRANCE);
-			open(mPanel, null);
 		} else {
 			// TOOD
 		}

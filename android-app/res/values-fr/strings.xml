@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">Plaphoons</string>
-    <string name="preference_application">Preferences</string>
+    <string name="preference_application">Parametre</string>
     <string name="preference_showapps_title">Show apps</string>
     <string name="preference_showapps_summary">Add a page with apps</string>
     <string name="preference_plafile_title">Filename of .pla file</string>
@@ -14,7 +13,7 @@
     <string name="preference_usesample_summary">that is preinstalled</string>
     <string name="preference_file">Use file</string>   
     <string name="preference_extended">Extended settings</string> 
-    <string name="menu_preferences">Preferences</string>
+    <string name="menu_preferences">Paramètre</string>
     <string name="install_filemanger">Filemanger missing! Please install from market</string>
     <string name="parsing_pla_file_failed">Parsing .pla file failed.</string>
 </resources>

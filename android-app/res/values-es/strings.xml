@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">Plaphoons</string>
     <string name="preference_application">Preferences</string>
     <string name="preference_showapps_title">Show apps</string>
     <string name="preference_showapps_summary">Add a page with apps</string>

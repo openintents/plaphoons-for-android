@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- * Copyright (C) 2009-2010 OpenIntents.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
--->
+<!-- * Copyright (C) 2009-2010 OpenIntents.org * * Licensed under the Apache 
+	License, Version 2.0 (the "License"); * you may not use this file except 
+	in compliance with the License. * You may obtain a copy of the License at 
+	* * http://www.apache.org/licenses/LICENSE-2.0 * * Unless required by applicable 
+	law or agreed to in writing, software * distributed under the License is 
+	distributed on an "AS IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY 
+	KIND, either express or implied. * See the License for the specific language 
+	governing permissions and * limitations under the License. -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:defaultValue=""
-        android:key="pladir"
-        android:summary="@string/preference_pladir_summary"
-        android:title="@string/preference_pladir_title" />
+	<CheckBoxPreference android:defaultValue="false"
+		android:key="usesample" android:summary="@string/preference_usesample_summary"
+		android:title="@string/preference_usesample_title"
+		android:disableDependentsState="true" />
 
-    <EditTextPreference
-        android:defaultValue=""
-        android:key="plafile"
-        android:summary="@string/preference_plafile_summary"
-        android:title="@string/preference_plafile_title" />
+	<PreferenceCategory android:title="@string/preference_file"
+		android:shouldDisableView="true"
+		>
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="showapps"
-        android:summary="@string/preference_showapps_summary"
-        android:title="@string/preference_showapps_title" />
+		<EditTextPreference android:defaultValue=""
+			android:key="plachoose" android:summary="@string/preference_plachoose_summary"
+			android:title="@string/preference_plachoose_title"
+			android:dependency="usesample" />
 
+		<EditTextPreference android:defaultValue=""
+			android:key="pladir" android:summary="@string/preference_pladir_summary"
+			android:title="@string/preference_pladir_title" 
+			android:dependency="usesample"/>
+
+		<EditTextPreference android:defaultValue=""
+			android:key="plafile" android:summary="@string/preference_plafile_summary"
+			android:title="@string/preference_plafile_title" 
+			android:dependency="usesample"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/preference_extended">
+		<CheckBoxPreference android:defaultValue="false"
+			android:key="showapps" android:summary="@string/preference_showapps_summary"
+			android:title="@string/preference_showapps_title" 
+			android:enabled="false"/>
+	</PreferenceCategory>
 </PreferenceScreen>

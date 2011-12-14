@@ -1,10 +1,7 @@
 package org.openintents.plaphoons.ui.widget;
 
-import java.io.File;
-
-import org.openintents.plaphoons.Log;
+import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.domain.TalkInfo;
-import org.openintents.plaphoons.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,13 +37,13 @@ public class TalkButton extends LinearLayout {
 	}
 
 	public void updateData(String plaRootDir) {
-		Log.v("updating " + mTalkInfo.title);
+		//Log.v("updating " + mTalkInfo.title);
 		TextView t = (TextView) findViewById(R.id.button_text);
 		t.setText(mTalkInfo.title);
 
 		ImageView i = (ImageView) findViewById(R.id.button_image);
 
-		if (mTalkInfo.drawablePath != null) {
+		if (mTalkInfo.drawablePath != null && mTalkInfo.drawablePath.length() > 0) {
 			Bitmap bm = getBitmap(plaRootDir + "/" + mTalkInfo.drawablePath);
 			i.setImageBitmap(bm);
 		} else if (mTalkInfo.drawable != 0) {

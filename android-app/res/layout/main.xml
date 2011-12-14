@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/talker_layout"
-    xmlns:util="http://schemas.android.com/apk/res/org.openintents.plaphoons"
+    xmlns:util="http://schemas.android.com/apk/res/org.openintents.plaphoons.sample"
 	 util:size="6"    
     >
     

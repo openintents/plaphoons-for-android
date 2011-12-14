@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="preference_application">Einstellungen</string>
+    <string name="preference_showapps_title">Apps anzeigen</string>
+    <string name="preference_showapps_summary">Eine Seite mit Apps hinzufügen</string>
+    <string name="preference_plafile_title">Dateiname der .pla Datei</string>
+    <string name="preference_plafile_summary">ohne Pfad</string>
+    <string name="preference_pladir_title">Pad zur .pla Datei</string>
+    <string name="preference_pladir_summary">Leer lassen für den Standardwert SD-Karte (/mnt/sdcard)</string>
+    <string name="preference_plachoose_title">Datei auswählen</string>
+    <string name="preference_plachoose_summary">Einen Dateimananger wie OI Dateimanager benutzen</string>    
+    <string name="preference_usesample_title">Beispiel benutzen</string>
+    <string name="preference_usesample_summary">das vorinstalliert ist</string>
+    <string name="preference_file">Datei benutzen</string>   
+    <string name="preference_extended">Erweiterte Einstellungen</string> 
+    <string name="menu_preferences">Einstellungen</string>
+    <string name="install_filemanger">Dateimanager fehlt! Bitte aus dem Market installieren</string>
+    <string name="parsing_pla_file_failed">Parsen der .pla Datei fehlgeschlagen.</string>
+</resources>
