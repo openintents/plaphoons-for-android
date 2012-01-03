@@ -1,14 +1,13 @@
 package org.openintents.plaphoons;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
 
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
-import org.openintents.plaphoons.sample.R;
 
 import android.graphics.Color;
 
@@ -17,9 +16,9 @@ public class PlaFileParser {
 	// NomFitxerSol){
 	Tools tool = new Tools();
 
-	public TalkInfoCollection parseFile(String filename) throws IOException {		
-		BufferedReader br = new BufferedReader(new FileReader(filename));
-
+	public TalkInfoCollection parseFile(String filePath,  String encoding) throws IOException {		
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), encoding));
+		
 		TalkInfoCollection tiCollection = parseHeader(br);
 
 		TalkInfo talkInfo;

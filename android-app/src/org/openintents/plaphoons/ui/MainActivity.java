@@ -33,6 +33,7 @@ import org.openintents.plaphoons.ui.widget.TalkButton;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class MainActivity extends Activity implements OnInitListener {
 	private String mCurrentPlaFilename;
 	private boolean mUseSample;
 	private ArrayList<String> mParentStack = new ArrayList<String>();
+	protected String mEncoding;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -125,7 +127,8 @@ public class MainActivity extends Activity implements OnInitListener {
 		mPlaRootDir = prefs.getString("pladir", Environment
 				.getExternalStorageDirectory().getAbsolutePath());
 		mPlaFilename = prefs.getString("plafile", null);
-		mUseSample = prefs.getBoolean("usesample", true);
+		mUseSample = prefs.getBoolean("usesample", false);
+		mEncoding = prefs.getString("encoding", "iso-8859-1");
 	}
 
 	public void showPanel(final TalkInfoCollection tiCollection,
@@ -209,7 +212,13 @@ public class MainActivity extends Activity implements OnInitListener {
 			startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
 
 			return true;
-
+		case R.id.about:
+			try {
+				AboutDialogBuilder.create(this).show();
+			} catch (NameNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -233,7 +242,7 @@ public class MainActivity extends Activity implements OnInitListener {
 			protected TalkInfoCollection doInBackground(
 					TalkInfoCollection... params) {
 
-				if (mCurrentPlaFilename == null) {
+				if (TextUtils.isEmpty(mCurrentPlaFilename)) {
 					mCurrentPlaFilename = mPlaFilename;
 				}
 
@@ -249,7 +258,7 @@ public class MainActivity extends Activity implements OnInitListener {
 					Log.v("open " + fullFilePath);
 
 					try {
-						panel = mParser.parseFile(fullFilePath);
+						panel = mParser.parseFile(fullFilePath, mEncoding);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -286,10 +295,8 @@ public class MainActivity extends Activity implements OnInitListener {
 						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				startActivity(installIntent);
 			}
-		} else if (requestCode == REQUEST_CODE_PREFERENCES) {
-			setValuesFromPreferences();
-			mCurrentPlaFilename = null;
-			openPanel();
+		} else if (requestCode == REQUEST_CODE_PREFERENCES) {			
+			mCurrentPlaFilename = null;			
 		}
 	}
 
