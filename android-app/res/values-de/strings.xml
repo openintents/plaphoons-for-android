@@ -11,9 +11,14 @@
     <string name="preference_plachoose_summary">Einen Dateimananger wie OI Dateimanager benutzen</string>    
     <string name="preference_usesample_title">Beispiel benutzen</string>
     <string name="preference_usesample_summary">das vorinstalliert ist</string>
+    <string name="preference_encoding_title">Zeichenkodieren</string>
+    <string name="preference_encoding_summary">nur ändern, wenn es Problem mit einzelnen Zeichen gibt (Standard: iso-8859-1, Alternativen: utf8)</string>
+    
     <string name="preference_file">Datei benutzen</string>   
     <string name="preference_extended">Erweiterte Einstellungen</string> 
     <string name="menu_preferences">Einstellungen</string>
     <string name="install_filemanger">Dateimanager fehlt! Bitte aus dem Market installieren</string>
     <string name="parsing_pla_file_failed">Parsen der .pla Datei fehlgeschlagen.</string>
+    <string name="about">Entwickelt von Friedger Müffke\nbasierend auf Plaphoons des Fressa Projekts(http://fressa.blogspot.com).\nQuellcode ist verfügbar auf https://github.com/openintents/plaphoons-for-android.\nKontakt support@openintents.org</string>
+    
 </resources>

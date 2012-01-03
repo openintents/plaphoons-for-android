@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="preference_application">Parametre</string>
-    <string name="preference_showapps_title">Show apps</string>
-    <string name="preference_showapps_summary">Add a page with apps</string>
-    <string name="preference_plafile_title">Filename of .pla file</string>
-    <string name="preference_plafile_summary">without path</string>
-    <string name="preference_pladir_title">Path to .pla file</string>
-    <string name="preference_pladir_summary">leave empty for default value (i.e. root directory on sdcard)</string>
-    <string name="preference_plachoose_title">Choose file</string>
-    <string name="preference_plachoose_summary">using a filemanager like OI Filemanager</string>    
-    <string name="preference_usesample_title">Use sample</string>
-    <string name="preference_usesample_summary">that is preinstalled</string>
-    <string name="preference_file">Use file</string>   
-    <string name="preference_extended">Extended settings</string> 
-    <string name="menu_preferences">Paramètre</string>
-    <string name="install_filemanger">Filemanger missing! Please install from market</string>
-    <string name="parsing_pla_file_failed">Parsing .pla file failed.</string>
+   <string name="preference_application">Paramètres</string>
+    <string name="preference_showapps_title">Montrer les applications</string>
+    <string name="preference_showapps_summary">Ajouter la page des applications</string>
+    <string name="preference_plafile_title">Nom du fichier .pla</string>
+    <string name="preference_plafile_summary">sans le chemin</string>
+    <string name="preference_pladir_title">Chemin vers le fichier .pla</string>
+    <string name="preference_pladir_summary">laisser vide pour la valeur par défaut (ex: dossier root/racine sur la sdcard)</string>
+    <string name="preference_plachoose_title">Choisir fichier</string>
+    <string name="preference_plachoose_summary">utilisez un gestionnaire de fichiers (par ex OI Filemanager)</string>    
+    <string name="preference_usesample_title">Utilisez l’échantillon</string>
+    <string name="preference_usesample_summary">qui est préinstallé</string>
+    <string name="preference_encoding_title">Codage des caractères</string>
+    <string name="preference_encoding_summary">changez seulement, s\'il ya des problems avec certains charactères. (standard: iso-8859-1, alternatives: utf8)</string>       
+    <string name="preference_file">Utiliser fichier</string>   
+    <string name="preference_extended">Préférences étendues</string> 
+    <string name="menu_preferences">Paramètres</string>
+    <string name="install_filemanger">Gestionnaire de fichiers manquant! Réinstallez depuis le market</string>
+    <string name="parsing_pla_file_failed">Erreur lors de l’analyse syntaxique du fichier .pla</string>
+    <string name="about">Developé par Friedger Müffke\nbasé sur Plaphoons par Fressa Project(http://fressa.blogspot.com).\nCode des source disponible à https://github.com/openintents/plaphoons-for-android.\nContact support@openintents.org</string>
+    
 </resources>

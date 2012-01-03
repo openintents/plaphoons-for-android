@@ -34,6 +34,11 @@
 			android:title="@string/preference_plafile_title" 
 			android:dependency="usesample"/>
 
+		<EditTextPreference android:defaultValue="utf8"
+			android:key="encoding" android:summary="@string/preference_encoding_summary"
+			android:title="@string/preference_encoding_title" 
+			android:dependency="usesample"/>
+
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/preference_extended">
