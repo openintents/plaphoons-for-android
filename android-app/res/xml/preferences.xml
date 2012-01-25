@@ -47,4 +47,17 @@
 			android:title="@string/preference_showapps_title" 
 			android:enabled="false"/>
 	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/preference_android_settings">
+		<PreferenceScreen
+            	android:key="appsettings"
+            	android:title="@string/preference_appsettings_title"
+            	android:summary="@string/preference_appsettings_summary"            	
+            	>
+	<intent android:action="android.settings.APPLICATION_DETAILS_SETTINGS"
+	            android:data="package:org.openintents.plaphoons.sample"	            
+                            />
+     </PreferenceScreen>
+	</PreferenceCategory>
+	
 </PreferenceScreen>

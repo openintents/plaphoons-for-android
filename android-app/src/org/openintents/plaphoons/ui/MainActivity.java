@@ -31,6 +31,7 @@ import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -219,6 +220,18 @@ public class MainActivity extends Activity implements OnInitListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			return true;
+		case R.id.launcher:
+			try {
+				Intent target = new Intent();
+				target.setAction(Intent.ACTION_MAIN);
+				target.addCategory(Intent.CATEGORY_HOME);
+				Intent chooser = Intent.createChooser(target, getString(R.string.choose_launcher));
+				startActivity(chooser);
+			} catch (ActivityNotFoundException e){
+				e.printStackTrace();
+			}
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

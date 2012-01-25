@@ -3,6 +3,7 @@ package org.openintents.plaphoons.ui;
 import org.openintents.plaphoons.sample.R;
 
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -31,6 +32,13 @@ public class PreferencesActivity extends PreferenceActivity {
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preferences);
 
+		Intent settingsIntent = new Intent();
+		settingsIntent.setData(Uri.parse("package:" + getPackageName()));				
+		settingsIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+		settingsIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.applications.InstalledAppDetails"));
+
+		addPreferencesFromIntent(settingsIntent);
+		
 		mPladirPref = (EditTextPreference) findPreference("pladir");
 		mPlafilePref = (EditTextPreference) findPreference("plafile");
 

@@ -16,8 +16,15 @@
     <string name="preference_encoding_summary">only change if there are problems with certain letters (default: iso-8859-1, alternatives: utf8)</string>
     <string name="preference_file">Use file</string>   
     <string name="preference_extended">Extended settings</string> 
+    
+    <string name="preference_android_settings">Android Settings</string>
+    <string name="preference_appsettings_title">Settings Plaphoons</string>
+    <string name="preference_appsettings_summary">Change Default launcher</string>
+    
     <string name="menu_preferences">Preferences</string>
+    <string name="menu_launcher">Exit</string>
     <string name="menu_about">About</string>
+    <string name="choose_launcher">Please choose</string>
     <string name="install_filemanger">Filemanger missing! Please install from market</string>
     <string name="parsing_pla_file_failed">Parsing .pla file failed.</string>
     <string name="about">Developed by Friedger Müffke\nbased on Plaphoons by Fressa Project(http://fressa.blogspot.com).\nSource code available at https://github.com/openintents/plaphoons-for-android.\nContact support@openintents.org</string>

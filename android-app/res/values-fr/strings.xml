@@ -15,7 +15,15 @@
     <string name="preference_encoding_summary">changez seulement, s\'il ya des problems avec certains charactères. (standard: iso-8859-1, alternatives: utf8)</string>       
     <string name="preference_file">Utiliser fichier</string>   
     <string name="preference_extended">Préférences étendues</string> 
+    
+    <string name="preference_android_settings">Paramètres Android</string>
+    <string name="preference_appsettings_title">Paramètres Plaphoons</string>
+    <string name="preference_appsettings_summary">Changer default launcher</string>
+    
     <string name="menu_preferences">Paramètres</string>
+    <string name="menu_launcher">Terminer</string>
+    <string name="menu_about">Info</string>
+    <string name="choose_launcher">Choisissez svp</string>
     <string name="install_filemanger">Gestionnaire de fichiers manquant! Réinstallez depuis le market</string>
     <string name="parsing_pla_file_failed">Erreur lors de l’analyse syntaxique du fichier .pla</string>
     <string name="about">Developé par Friedger Müffke\nbasé sur Plaphoons par Fressa Project(http://fressa.blogspot.com).\nCode des source disponible à https://github.com/openintents/plaphoons-for-android.\nContact support@openintents.org</string>
