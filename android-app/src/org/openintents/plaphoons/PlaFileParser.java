@@ -437,13 +437,13 @@ public class PlaFileParser {
 			if (NumeroColorMarcs == 0) {
 				talkInfo.color = Color.BLACK;
 			} else if (NumeroColorMarcs == 1) {
-				talkInfo.color = Color.rgb(255, 0, 255);
+				talkInfo.color = Color.MAGENTA; // lilac
 			} else if (NumeroColorMarcs == 2) {
 				talkInfo.color = Color.YELLOW;
 			} else if (NumeroColorMarcs == 3) {
 				talkInfo.color = Color.GREEN;
 			} else if (NumeroColorMarcs == 4) {
-				talkInfo.color = Color.RED; // was orange
+				talkInfo.color = Color.rgb(255, 165, 0); // orange
 			} else if (NumeroColorMarcs == 5) {
 				talkInfo.color = Color.BLUE;
 			} else if (NumeroColorMarcs == 6) {

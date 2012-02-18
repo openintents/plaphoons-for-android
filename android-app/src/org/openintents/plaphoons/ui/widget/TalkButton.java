@@ -53,21 +53,23 @@ public class TalkButton extends LinearLayout {
 			i.setImageResource(0);
 		}
 
-		if (mTalkInfo.color == Color.GREEN) {
-			setBackgroundResource(R.drawable.picture_frame_green);
-		} else if (mTalkInfo.color == Color.RED) {
-			setBackgroundResource(R.drawable.picture_frame_red);
-		} else if (mTalkInfo.color == Color.YELLOW) {
-			setBackgroundResource(R.drawable.picture_frame_yellow);
-		} else if (mTalkInfo.color == Color.argb(0, 255, 255, 0)) {
-			setBackgroundResource(R.drawable.picture_frame_brown);
+		if (mTalkInfo.color == Color.BLACK) {
+			setBackgroundResource(R.drawable.picture_frame_black);
 		} else if (mTalkInfo.color == Color.MAGENTA) {
 			setBackgroundResource(R.drawable.picture_frame_magenta);
-		} else if (mTalkInfo.color == Color.BLACK) {
-			setBackgroundResource(R.drawable.picture_frame_black);
+		} else if (mTalkInfo.color == Color.YELLOW) {
+			setBackgroundResource(R.drawable.picture_frame_yellow);			
+		} else if (mTalkInfo.color == Color.GREEN) {
+			setBackgroundResource(R.drawable.picture_frame_green);
+		} else if (mTalkInfo.color == Color.rgb(255, 165, 0)) {
+			setBackgroundResource(R.drawable.picture_frame_orange);
+		} else if (mTalkInfo.color == Color.BLUE) {
+			setBackgroundResource(R.drawable.picture_frame_blue);
+		} else if (mTalkInfo.color == Color.WHITE) {
+			setBackgroundResource(R.drawable.picture_frame_white);
+		} else {
+			setBackgroundColor(mTalkInfo.color);
 		}
-		// setBackgroundColor(mTalkInfo.color);
-
 	}
 
 	private Bitmap getBitmap(int drawable) {
