@@ -81,25 +81,22 @@ public class MainActivity extends Activity implements OnInitListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.main);
-		
-//		// TODO full screen on phones
-//		if (Build.VERSION.SDK_INT >= 11){
-//			setContentView(R.layout.main);
-//			HoneycombHelper.fullScreen(this);
-//			
-//		} else {
-//			requestWindowFeature(Window.FEATURE_NO_TITLE);
-//	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-//	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//	        setContentView(R.layout.main);
-//		}
-		
-		
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.main);
+
+		// // TODO full screen on phones
+		// if (Build.VERSION.SDK_INT >= 11){
+		// setContentView(R.layout.main);
+		// HoneycombHelper.fullScreen(this);
+		//
+		// } else {
+		// requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		// setContentView(R.layout.main);
+		// }
 
 		mParser = new PlaFileParser();
 		setValuesFromSavedInstanceState(savedInstanceState);
@@ -165,8 +162,16 @@ public class MainActivity extends Activity implements OnInitListener {
 						TalkInfo talkInfo = tb.mTalkInfo;
 						if (talkInfo.text != null) {
 							HashMap<String, String> params = new HashMap<String, String>();
-							mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD,
-									params);
+							
+							try{ 
+								mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD,params);
+							} catch (Exception ex){
+								// missing data, install it
+								Intent installIntent = new Intent();
+								installIntent
+										.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+								startActivity(installIntent);
+							}
 						}
 
 						if (talkInfo.child != null) {
@@ -226,9 +231,10 @@ public class MainActivity extends Activity implements OnInitListener {
 				Intent target = new Intent();
 				target.setAction(Intent.ACTION_MAIN);
 				target.addCategory(Intent.CATEGORY_HOME);
-				Intent chooser = Intent.createChooser(target, getString(R.string.choose_launcher));
+				Intent chooser = Intent.createChooser(target,
+						getString(R.string.choose_launcher));
 				startActivity(chooser);
-			} catch (ActivityNotFoundException e){
+			} catch (ActivityNotFoundException e) {
 				e.printStackTrace();
 			}
 			return true;
@@ -308,8 +314,8 @@ public class MainActivity extends Activity implements OnInitListener {
 						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				startActivity(installIntent);
 			}
-		} else if (requestCode == REQUEST_CODE_PREFERENCES) {			
-			mCurrentPlaFilename = null;			
+		} else if (requestCode == REQUEST_CODE_PREFERENCES) {
+			mCurrentPlaFilename = null;
 		}
 	}
 
