@@ -30,6 +30,8 @@ import org.openintents.plaphoons.domain.TalkInfoCollection;
 import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
 
+import com.htc.pen.PenEvent;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -47,7 +49,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -154,42 +158,41 @@ public class MainActivity extends Activity implements OnInitListener {
 				}
 				tb.setTalkInfo(ti);
 				tb.updateData(mPlaRootDir);
-				tb.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View view) {
-						TalkButton tb = (TalkButton) view;
-						TalkInfo talkInfo = tb.mTalkInfo;
-						if (talkInfo.text != null) {
-							HashMap<String, String> params = new HashMap<String, String>();
+				
+				tb.setOnTouchListener(new OnTouchListener() {					
 							
-							try{ 
-								mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD,params);
-							} catch (Exception ex){
-								// missing data, install it
-								Intent installIntent = new Intent();
-								installIntent
-										.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-								startActivity(installIntent);
+							
+							public boolean onTouch(View v, MotionEvent event) {
+								 // handle pen event:
+					            if (PenEvent.isPenEvent(event)) {
+					                int action = PenEvent.PenAction(event);
+					                int button = PenEvent.PenButton(event);	              
+					              
+					                switch (action) {
+					                case PenEvent.PEN_ACTION_DOWN:
+					                    onButtonClick(tiCollection, (TalkButton) v);
+					                    break;
+					                case PenEvent.PEN_ACTION_UP:
+					                   
+					                    break;
+					                case PenEvent.PEN_ACTION_MOVE:
+					                    
+					                    break;
+					                }
+					            } else {
+					                // handle touch event	                
+					            }
+					            return true;	        
 							}
-						}
-
-						if (talkInfo.child != null) {
-							// handle click on sample
-							// TODO cache children and handle here as well
-							MainActivity.this.showPanel(talkInfo.child,
-									tiCollection);
-
-						} else if (talkInfo.childFilename != null
-								&& talkInfo.childFilename.length() > 0) {
-
-							mParentStack.add(mCurrentPlaFilename);
-							mCurrentPlaFilename = talkInfo.childFilename;
-							openPanel();
-
-						}
-					}
-				});
+						});
+			
+//				tb.setOnClickListener(new View.OnClickListener() {
+//
+//					@Override
+//					public void onClick(View view) {
+//						onButtonClick(tiCollection, view);
+//					}
+//				});
 
 				MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
 						LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -199,6 +202,8 @@ public class MainActivity extends Activity implements OnInitListener {
 
 			}
 		}
+		
+		
 
 	}
 
@@ -347,6 +352,39 @@ public class MainActivity extends Activity implements OnInitListener {
 		super.onDestroy();
 		if (mTts != null) {
 			mTts.shutdown();
+		}
+	}
+
+	private void onButtonClick(final TalkInfoCollection tiCollection, View view) {
+		TalkButton tb = (TalkButton) view;
+		TalkInfo talkInfo = tb.mTalkInfo;
+		if (talkInfo.text != null) {
+			HashMap<String, String> params = new HashMap<String, String>();
+			
+			try{ 
+				mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD,params);
+			} catch (Exception ex){
+				// missing data, install it
+				Intent installIntent = new Intent();
+				installIntent
+						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
+		}
+
+		if (talkInfo.child != null) {
+			// handle click on sample
+			// TODO cache children and handle here as well
+			MainActivity.this.showPanel(talkInfo.child,
+					tiCollection);
+
+		} else if (talkInfo.childFilename != null
+				&& talkInfo.childFilename.length() > 0) {
+
+			mParentStack.add(mCurrentPlaFilename);
+			mCurrentPlaFilename = talkInfo.childFilename;
+			openPanel();
+
 		}
 	}
 }
