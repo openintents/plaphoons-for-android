@@ -18,6 +18,7 @@ public class TalkInfo {
 
 	public int drawable;
 	public String drawablePath;
+	public int soundId;
 
 	public TalkInfo(String title) {
 		this(title, title, Color.BLACK, null, 0);
@@ -68,6 +69,10 @@ public class TalkInfo {
 		this.child = child;
 		this.drawable = drawable;
 		this.drawablePath = drawablePath;
+	}
+
+	public boolean isTextWav() {
+		return text.endsWith(".wav");
 	}
 
 }

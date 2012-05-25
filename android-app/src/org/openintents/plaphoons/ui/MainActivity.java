@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.openintents.plaphoons.Log;
 import org.openintents.plaphoons.PlaFileParser;
+import org.openintents.plaphoons.sample.BuildConfig;
 import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.SampleTalkCollection;
 import org.openintents.plaphoons.domain.TalkInfo;
@@ -37,6 +38,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,7 +64,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnInitListener {
+public class MainActivity extends Activity implements OnInitListener,
+		OnLoadCompleteListener {
 
 	private static final int NOTIFICATION_DEFAULT = 1;
 	private static final String ACTION_DIALOG = "org.openintents.plaphoons.action.DIALOG";
@@ -80,6 +86,9 @@ public class MainActivity extends Activity implements OnInitListener {
 	private boolean mUseSample;
 	private ArrayList<String> mParentStack = new ArrayList<String>();
 	protected String mEncoding;
+	protected boolean mHasDigitizer;
+	private SoundPool mSoundPool;
+	private int mPendingSound;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +98,9 @@ public class MainActivity extends Activity implements OnInitListener {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.main);
+
+		mHasDigitizer = getPackageManager().hasSystemFeature(
+				"android.hardware.touchscreen.pen");
 
 		// // TODO full screen on phones
 		// if (Build.VERSION.SDK_INT >= 11){
@@ -104,6 +116,9 @@ public class MainActivity extends Activity implements OnInitListener {
 
 		mParser = new PlaFileParser();
 		setValuesFromSavedInstanceState(savedInstanceState);
+
+		mSoundPool = new SoundPool(1, AudioManager.STREAM_VOICE_CALL, 0);
+		mSoundPool.setOnLoadCompleteListener(this);
 
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -158,41 +173,45 @@ public class MainActivity extends Activity implements OnInitListener {
 				}
 				tb.setTalkInfo(ti);
 				tb.updateData(mPlaRootDir);
-				
-				tb.setOnTouchListener(new OnTouchListener() {					
-							
-							
-							public boolean onTouch(View v, MotionEvent event) {
-								 // handle pen event:
-					            if (PenEvent.isPenEvent(event)) {
-					                int action = PenEvent.PenAction(event);
-					                int button = PenEvent.PenButton(event);	              
-					              
-					                switch (action) {
-					                case PenEvent.PEN_ACTION_DOWN:
-					                    onButtonClick(tiCollection, (TalkButton) v);
-					                    break;
-					                case PenEvent.PEN_ACTION_UP:
-					                   
-					                    break;
-					                case PenEvent.PEN_ACTION_MOVE:
-					                    
-					                    break;
-					                }
-					            } else {
-					                // handle touch event	                
-					            }
-					            return true;	        
+
+				if (mHasDigitizer) {
+					tb.setOnTouchListener(new OnTouchListener() {
+
+						public boolean onTouch(View v, MotionEvent event) {
+							// handle pen event:
+
+							if (PenEvent.isPenEvent(event)) {
+								int action = PenEvent.PenAction(event);
+								int button = PenEvent.PenButton(event);
+
+								switch (action) {
+								case PenEvent.PEN_ACTION_DOWN:
+									onButtonClick(tiCollection, (TalkButton) v);
+									break;
+								case PenEvent.PEN_ACTION_UP:
+
+									break;
+								case PenEvent.PEN_ACTION_MOVE:
+
+									break;
+								}
+
+							} else {
+								// handle touch event
 							}
-						});
-			
-//				tb.setOnClickListener(new View.OnClickListener() {
-//
-//					@Override
-//					public void onClick(View view) {
-//						onButtonClick(tiCollection, view);
-//					}
-//				});
+							return true;
+						}
+					});
+
+				} else {
+					tb.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							onButtonClick(tiCollection, view);
+						}
+					});
+				}
 
 				MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
 						LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -202,8 +221,6 @@ public class MainActivity extends Activity implements OnInitListener {
 
 			}
 		}
-		
-		
 
 	}
 
@@ -287,6 +304,18 @@ public class MainActivity extends Activity implements OnInitListener {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					for (TalkInfo[] tis : panel.infos) {
+						for (TalkInfo ti : tis) {
+							if (ti.isTextWav()) {
+								String wavFilePath = mPlaRootDir + "/"
+										+ ti.text;
+								if (BuildConfig.DEBUG) {
+									Log.v("open " + wavFilePath);
+								}
+								ti.soundId = mSoundPool.load(wavFilePath, 1);
+							}
+						}
+					}
 				}
 
 				return panel;
@@ -348,6 +377,17 @@ public class MainActivity extends Activity implements OnInitListener {
 	}
 
 	@Override
+	public void onLoadComplete(SoundPool sp, int id, int status) {
+		if (BuildConfig.DEBUG) {
+			Log.v("open " + id + " " + status);
+		}
+		if (mPendingSound == id) {
+			sp.play(id, 1, 1, 0, 0, 1);
+		}
+
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		if (mTts != null) {
@@ -359,24 +399,47 @@ public class MainActivity extends Activity implements OnInitListener {
 		TalkButton tb = (TalkButton) view;
 		TalkInfo talkInfo = tb.mTalkInfo;
 		if (talkInfo.text != null) {
-			HashMap<String, String> params = new HashMap<String, String>();
-			
-			try{ 
-				mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD,params);
-			} catch (Exception ex){
-				// missing data, install it
-				Intent installIntent = new Intent();
-				installIntent
-						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-				startActivity(installIntent);
+
+			if (talkInfo.isTextWav()) {
+				final String fullFilePath = mPlaRootDir + "/" + talkInfo.text;
+				if (BuildConfig.DEBUG) {
+					Log.v("open " + fullFilePath);
+				}
+
+				if (talkInfo.soundId > 0) {
+					int soundId = mSoundPool.play(talkInfo.soundId, 1, 1, 0, 0,
+							1);
+					if (soundId == 0) {
+
+						soundId = mSoundPool.load(fullFilePath, 1);
+						talkInfo.soundId = soundId;
+						mPendingSound = soundId;
+					}
+				} else {
+					final int soundId = mSoundPool.load(fullFilePath, 1);
+					talkInfo.soundId = soundId;
+					mPendingSound = soundId;
+				}
+
+			} else {
+				HashMap<String, String> params = new HashMap<String, String>();
+
+				try {
+					mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD, params);
+				} catch (Exception ex) {
+					// missing data, install it
+					Intent installIntent = new Intent();
+					installIntent
+							.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+					startActivity(installIntent);
+				}
 			}
 		}
 
 		if (talkInfo.child != null) {
 			// handle click on sample
 			// TODO cache children and handle here as well
-			MainActivity.this.showPanel(talkInfo.child,
-					tiCollection);
+			MainActivity.this.showPanel(talkInfo.child, tiCollection);
 
 		} else if (talkInfo.childFilename != null
 				&& talkInfo.childFilename.length() > 0) {

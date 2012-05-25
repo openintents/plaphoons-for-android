@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionCode="7"
-	android:versionName="1.2.3.HTC" package="org.openintents.plaphoons.sample">
+	android:versionCode="9"
+	android:versionName="1.2.5" package="org.openintents.plaphoons.sample">
 	<uses-sdk android:targetSdkVersion="10" android:minSdkVersion="6"/>
 
+	<uses-feature android:name="android.hardware.touchscreen.pen" android:required="false"/>
+	
 	<application android:icon="@drawable/icon" android:label="@string/app_name"		
 		android:hardwareAccelerated="true" android:theme="@android:style/Theme.Holo.Light">
 		<activity android:name="org.openintents.plaphoons.ui.MainActivity" android:label="@string/app_name">
