@@ -48,7 +48,7 @@ public class PreferencesActivity extends PreferenceActivity {
 					.toString());
 		}
 
-		EditTextPreference mPlaChoose = (EditTextPreference) findPreference("plachoose");
+		final EditTextPreference mPlaChoose = (EditTextPreference) findPreference("plachoose");
 		mPlaChoose
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -73,7 +73,9 @@ public class PreferencesActivity extends PreferenceActivity {
 							Toast.makeText(PreferencesActivity.this, R.string.install_filemanger,
 									Toast.LENGTH_LONG).show();
 						}
-						//FIXME 
+						
+						mPlaChoose.getDialog().cancel();
+						
 						return true;
 					}
 				});			
