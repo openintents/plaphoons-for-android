@@ -23,15 +23,13 @@ import java.util.Locale;
 
 import org.openintents.plaphoons.Log;
 import org.openintents.plaphoons.PlaFileParser;
-import org.openintents.plaphoons.sample.BuildConfig;
-import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.SampleTalkCollection;
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
+import org.openintents.plaphoons.sample.BuildConfig;
+import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
-
-import com.htc.pen.PenEvent;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -39,11 +37,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -63,6 +59,8 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.htc.pen.PenEvent;
 
 public class MainActivity extends Activity implements OnInitListener,
 		OnLoadCompleteListener {
@@ -151,7 +149,9 @@ public class MainActivity extends Activity implements OnInitListener,
 	public void showPanel(final TalkInfoCollection tiCollection,
 			TalkInfoCollection parent) {
 
-		Log.v("show " + tiCollection);
+		if (BuildConfig.DEBUG) {
+			Log.v("show " + tiCollection);
+		}
 
 		/* Find viewGroup defined in main.xml */
 		SquareGridLayout viewGroup = (SquareGridLayout) findViewById(R.id.talker_layout);
@@ -275,7 +275,9 @@ public class MainActivity extends Activity implements OnInitListener,
 	}
 
 	private void openPanel() {
-		Log.v("openPanel");
+		if (BuildConfig.DEBUG) {
+			Log.v("openPanel");
+		}
 
 		new AsyncTask<TalkInfoCollection, Void, TalkInfoCollection>() {
 
@@ -296,7 +298,9 @@ public class MainActivity extends Activity implements OnInitListener,
 
 					String fullFilePath = mPlaRootDir + "/"
 							+ mCurrentPlaFilename;
-					Log.v("open " + fullFilePath);
+					if (BuildConfig.DEBUG) {
+						Log.v("open " + fullFilePath);
+					}
 
 					try {
 						panel = mParser.parseFile(fullFilePath, mEncoding);
