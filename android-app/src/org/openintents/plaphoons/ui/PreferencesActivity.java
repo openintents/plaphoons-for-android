@@ -1,5 +1,7 @@
 package org.openintents.plaphoons.ui;
 
+import java.util.List;
+
 import org.openintents.plaphoons.PlaphoonsApplication;
 import org.openintents.plaphoons.sample.R;
 
@@ -7,6 +9,8 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -96,7 +100,15 @@ public class PreferencesActivity extends PreferenceActivity {
 						return true;
 					}
 				});
+		
+		checkIntent(findPreference("appsettings"));
+		checkIntent(findPreference("ttssettings"));
 
+	}
+
+	private void checkIntent(Preference p) {
+		List<ResolveInfo> infos = getPackageManager().queryIntentActivities(p.getIntent(), 0);
+		p.setEnabled(infos != null && infos.size() > 0);		
 	}
 
 	@Override

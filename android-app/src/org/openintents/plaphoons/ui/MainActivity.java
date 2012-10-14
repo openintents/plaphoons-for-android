@@ -25,6 +25,8 @@ import org.openintents.plaphoons.Log;
 import org.openintents.plaphoons.PlaFileParser;
 import org.openintents.plaphoons.PlaphoonsApplication;
 import org.openintents.plaphoons.SampleTalkCollection;
+import org.openintents.plaphoons.SampleTalkCollectionPhone;
+import org.openintents.plaphoons.Tools;
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
 import org.openintents.plaphoons.sample.BuildConfig;
@@ -32,12 +34,14 @@ import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
 import org.openintents.plaphoons.ui.widget.TalkButton.ClickHandler;
+import org.openintents.plaphoons.uitl.Helper;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -89,6 +93,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 	private EditText mText;
 	private int mQueueMode;
 	private List<TalkInfo> mTextStack = new ArrayList<TalkInfo>();
+	private boolean mPlayControlOnly;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -140,6 +145,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 		mEncoding = prefs.getString("encoding", "iso-8859-1");
 		mQueueMode = (prefs.getBoolean("queuemodedrop", true) ? TextToSpeech.QUEUE_FLUSH
 				: TextToSpeech.QUEUE_ADD);
+		mPlayControlOnly = prefs.getBoolean("playcontrolonly", false);
 	}
 
 	public void showPanel(final TalkInfoCollection tiCollection,
@@ -319,7 +325,11 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 				TalkInfoCollection panel = null;
 
 				if (mUseSample || TextUtils.isEmpty(mCurrentPlaFilename)) {
-					panel = SampleTalkCollection.acceuil;
+					if (Helper.isTablet(getResources().getConfiguration())) {
+						panel = SampleTalkCollection.acceuil;
+					} else {
+						panel = SampleTalkCollectionPhone.acceuil;
+					}
 
 				} else {
 
@@ -335,15 +345,18 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					for (TalkInfo[] tis : panel.infos) {
-						for (TalkInfo ti : tis) {
-							if (ti.isTextWav()) {
-								String wavFilePath = mPlaRootDir + "/"
-										+ ti.text;
-								if (BuildConfig.DEBUG) {
-									Log.v("open " + wavFilePath);
+					if (panel != null) {
+						for (TalkInfo[] tis : panel.infos) {
+							for (TalkInfo ti : tis) {
+								if (ti.isTextWav()) {
+									String wavFilePath = mPlaRootDir + "/"
+											+ ti.text;
+									if (BuildConfig.DEBUG) {
+										Log.v("open " + wavFilePath);
+									}
+									ti.soundId = mSoundPool
+											.load(wavFilePath, 1);
 								}
-								ti.soundId = mSoundPool.load(wavFilePath, 1);
 							}
 						}
 					}
@@ -414,7 +427,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
 		TalkInfo talkInfo = tb.mTalkInfo;
 
-		mTextStack.add(talkInfo);
+		// mTextStack.add(talkInfo);
 
 		if (talkInfo.text != null) {
 
@@ -422,39 +435,42 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 				mText.getText().append(talkInfo.text + " ");
 			}
 
-			if (talkInfo.isTextWav()) {
-				final String fullFilePath = mPlaRootDir + "/" + talkInfo.text;
-				if (BuildConfig.DEBUG) {
-					Log.v("open " + fullFilePath);
-				}
+			if (!mPlayControlOnly) {
+				if (talkInfo.isTextWav()) {
+					final String fullFilePath = mPlaRootDir + "/"
+							+ talkInfo.text;
+					if (BuildConfig.DEBUG) {
+						Log.v("open " + fullFilePath);
+					}
 
-				if (talkInfo.soundId > 0) {
-					int soundId = mSoundPool.play(talkInfo.soundId, 1, 1, 0, 0,
-							1);
-					if (soundId == 0) {
+					if (talkInfo.soundId > 0) {
+						int soundId = mSoundPool.play(talkInfo.soundId, 1, 1,
+								0, 0, 1);
+						if (soundId == 0) {
 
-						soundId = mSoundPool.load(fullFilePath, 1);
+							soundId = mSoundPool.load(fullFilePath, 1);
+							talkInfo.soundId = soundId;
+							mPendingSound = soundId;
+						}
+					} else {
+						final int soundId = mSoundPool.load(fullFilePath, 1);
 						talkInfo.soundId = soundId;
 						mPendingSound = soundId;
 					}
+
 				} else {
-					final int soundId = mSoundPool.load(fullFilePath, 1);
-					talkInfo.soundId = soundId;
-					mPendingSound = soundId;
-				}
+					HashMap<String, String> params = new HashMap<String, String>();
 
-			} else {
-				HashMap<String, String> params = new HashMap<String, String>();
-
-				try {
-					((PlaphoonsApplication) getApplication()).mTts.speak(
-							talkInfo.text, mQueueMode, params);
-				} catch (Exception ex) {
-					// missing data, install it
-					Intent installIntent = new Intent();
-					installIntent
-							.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-					startActivity(installIntent);
+					try {
+						((PlaphoonsApplication) getApplication()).mTts.speak(
+								talkInfo.text, mQueueMode, params);
+					} catch (Exception ex) {
+						// missing data, install it
+						Intent installIntent = new Intent();
+						installIntent
+								.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+						startActivity(installIntent);
+					}
 				}
 			}
 		}

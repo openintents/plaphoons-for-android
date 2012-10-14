@@ -13,7 +13,7 @@
     <string name="preference_usesample_title">Use sample</string>
     <string name="preference_usesample_summary">that is preinstalled</string>
     <string name="preference_encoding_title">Character Encoding</string>
-    <string name="preference_encoding_summary">only change if there are problems with certain letters (default: iso-8859-1, alternatives: utf8)</string>
+    <string name="preference_encoding_summary">Only change if there are problems with certain letters (default: iso-8859-1, alternatives: utf8)</string>
     <string name="preference_file">Use file</string>   
     <string name="preference_extended">Extended settings</string> 
     
@@ -21,9 +21,9 @@
     <string name="preference_locale_summary">Choose a language to overwrite the default language of the device</string>
     
     <string name="preference_queuemodedrop_title">Drop unfinished spoken text</string>
-    <string name="preference_queuemodedrop_summary">If checked queued text is dropped</string>
+    <string name="preference_queuemodedrop_summary">If checked, queued text is dropped</string>
     <string name="preference_playcontrolonly_title">Speak only on Play button</string>
-    <string name="preference_playcontrolonly_summary">If checked symbols are not played, only the written text when pressing play.</string>
+    <string name="preference_playcontrolonly_summary">If checked, symbols are not played, only the written text when pressing play.</string>
     
     <string name="preference_android_settings">Android Settings</string>
     <string name="preference_appsettings_title">App settings Plaphoons</string>
