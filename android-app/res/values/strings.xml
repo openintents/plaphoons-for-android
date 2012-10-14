@@ -17,9 +17,19 @@
     <string name="preference_file">Use file</string>   
     <string name="preference_extended">Extended settings</string> 
     
+    <string name="preference_locale_title">Language</string>
+    <string name="preference_locale_summary">Choose a language to overwrite the default language of the device</string>
+    
+    <string name="preference_queuemodedrop_title">Drop unfinished spoken text</string>
+    <string name="preference_queuemodedrop_summary">If checked queued text is dropped</string>
+    <string name="preference_playcontrolonly_title">Speak only on Play button</string>
+    <string name="preference_playcontrolonly_summary">If checked symbols are not played, only the written text when pressing play.</string>
+    
     <string name="preference_android_settings">Android Settings</string>
-    <string name="preference_appsettings_title">Settings Plaphoons</string>
+    <string name="preference_appsettings_title">App settings Plaphoons</string>
     <string name="preference_appsettings_summary">Change Default launcher</string>
+    <string name="preference_ttssettings_title">Text-To-Speech settings</string>
+    <string name="preference_ttssettings_summary">Change TTS enginge and settings</string>
     
     <string name="menu_preferences">Preferences</string>
     <string name="menu_launcher">Exit</string>
@@ -28,4 +38,9 @@
     <string name="install_filemanger">Filemanger missing! Please install from market</string>
     <string name="parsing_pla_file_failed">Parsing .pla file failed.</string>
     <string name="about">Developed by Friedger Müffke\nbased on Plaphoons by Fressa Project(http://fressa.blogspot.com).\nSource code available at https://github.com/openintents/plaphoons-for-android.\nContact support@openintents.org</string>
+    
+    <string name="home">Home</string>
+    <string name="play">Play</string>
+    <string name="delete">Delete</string>
+    <string name="language_changed">Language changed to %s</string>
 </resources>

@@ -5,12 +5,14 @@
   android:layout_height="match_parent"
   android:orientation="vertical"
   android:gravity="center"
-  android:background="@drawable/picture_frame_black">
+  android:background="@drawable/picture_frame_shape"
+  android:layout_margin="30dip"
+  android:padding="@dimen/border_width">
   
   <TextView android:id="@+id/button_text"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
-  			android:text="Manger" android:padding="10dp" android:textStyle="bold"/>
+  			android:text="Manger" android:padding="5dip"/>
   <ImageView 
   			android:id="@+id/button_image"
   			android:layout_width="match_parent"

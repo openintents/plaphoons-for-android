@@ -19,10 +19,11 @@ package org.openintents.plaphoons.ui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 import org.openintents.plaphoons.Log;
 import org.openintents.plaphoons.PlaFileParser;
+import org.openintents.plaphoons.PlaphoonsApplication;
 import org.openintents.plaphoons.SampleTalkCollection;
 import org.openintents.plaphoons.domain.TalkInfo;
 import org.openintents.plaphoons.domain.TalkInfoCollection;
@@ -30,40 +31,39 @@ import org.openintents.plaphoons.sample.BuildConfig;
 import org.openintents.plaphoons.sample.R;
 import org.openintents.plaphoons.ui.widget.SquareGridLayout;
 import org.openintents.plaphoons.ui.widget.TalkButton;
+import org.openintents.plaphoons.ui.widget.TalkButton.ClickHandler;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.htc.pen.PenEvent;
-
-public class MainActivity extends Activity implements OnInitListener,
-		OnLoadCompleteListener {
+public class MainActivity extends Activity implements OnLoadCompleteListener,
+		ClickHandler {
 
 	private static final int NOTIFICATION_DEFAULT = 1;
 	private static final String ACTION_DIALOG = "org.openintents.plaphoons.action.DIALOG";
@@ -76,7 +76,6 @@ public class MainActivity extends Activity implements OnInitListener,
 	private static final int REQUEST_CODE_DATA_CHECK = 1000;
 	private static final int REQUEST_CODE_PREFERENCES = 2000;
 
-	private TextToSpeech mTts;
 	private PlaFileParser mParser;
 	private String mPlaRootDir;
 	private String mPlaFilename;
@@ -87,6 +86,9 @@ public class MainActivity extends Activity implements OnInitListener,
 	protected boolean mHasDigitizer;
 	private SoundPool mSoundPool;
 	private int mPendingSound;
+	private EditText mText;
+	private int mQueueMode;
+	private List<TalkInfo> mTextStack = new ArrayList<TalkInfo>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,22 +97,17 @@ public class MainActivity extends Activity implements OnInitListener,
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.main);
+
+		if (Build.VERSION.SDK_INT >= 11) {
+			HoneycombHelper.fullScreen(this);
+		}
 
 		mHasDigitizer = getPackageManager().hasSystemFeature(
 				"android.hardware.touchscreen.pen");
 
-		// // TODO full screen on phones
-		// if (Build.VERSION.SDK_INT >= 11){
-		// setContentView(R.layout.main);
-		// HoneycombHelper.fullScreen(this);
-		//
-		// } else {
-		// requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		// setContentView(R.layout.main);
-		// }
+		mText = (EditText) findViewById(R.id.text);
 
 		mParser = new PlaFileParser();
 		setValuesFromSavedInstanceState(savedInstanceState);
@@ -118,9 +115,6 @@ public class MainActivity extends Activity implements OnInitListener,
 		mSoundPool = new SoundPool(1, AudioManager.STREAM_VOICE_CALL, 0);
 		mSoundPool.setOnLoadCompleteListener(this);
 
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, REQUEST_CODE_DATA_CHECK);
 	}
 
 	private void setValuesFromSavedInstanceState(Bundle savedInstanceState) {
@@ -144,6 +138,8 @@ public class MainActivity extends Activity implements OnInitListener,
 		mPlaFilename = prefs.getString("plafile", null);
 		mUseSample = prefs.getBoolean("usesample", false);
 		mEncoding = prefs.getString("encoding", "iso-8859-1");
+		mQueueMode = (prefs.getBoolean("queuemodedrop", true) ? TextToSpeech.QUEUE_FLUSH
+				: TextToSpeech.QUEUE_ADD);
 	}
 
 	public void showPanel(final TalkInfoCollection tiCollection,
@@ -152,6 +148,8 @@ public class MainActivity extends Activity implements OnInitListener,
 		if (BuildConfig.DEBUG) {
 			Log.v("show " + tiCollection);
 		}
+
+		mText.setVisibility(tiCollection.showTextBox ? View.VISIBLE : View.GONE);
 
 		/* Find viewGroup defined in main.xml */
 		SquareGridLayout viewGroup = (SquareGridLayout) findViewById(R.id.talker_layout);
@@ -174,44 +172,7 @@ public class MainActivity extends Activity implements OnInitListener,
 				tb.setTalkInfo(ti);
 				tb.updateData(mPlaRootDir);
 
-				if (mHasDigitizer) {
-					tb.setOnTouchListener(new OnTouchListener() {
-
-						public boolean onTouch(View v, MotionEvent event) {
-							// handle pen event:
-
-							if (PenEvent.isPenEvent(event)) {
-								int action = PenEvent.PenAction(event);
-								int button = PenEvent.PenButton(event);
-
-								switch (action) {
-								case PenEvent.PEN_ACTION_DOWN:
-									onButtonClick(tiCollection, (TalkButton) v);
-									break;
-								case PenEvent.PEN_ACTION_UP:
-
-									break;
-								case PenEvent.PEN_ACTION_MOVE:
-
-									break;
-								}
-
-							} else {
-								// handle touch event
-							}
-							return true;
-						}
-					});
-
-				} else {
-					tb.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View view) {
-							onButtonClick(tiCollection, view);
-						}
-					});
-				}
+				tb.setClickHandler(mHasDigitizer, tiCollection, this);
 
 				MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
 						LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -221,6 +182,72 @@ public class MainActivity extends Activity implements OnInitListener,
 
 			}
 		}
+
+		if (tiCollection.columns > 2) {
+			TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
+			tb.setTalkInfo(new TalkInfo(getString(R.string.home), Color.WHITE,
+					R.drawable.home));
+			tb.updateData(null);
+			tb.setClickHandler(mHasDigitizer, tiCollection,
+					new TalkButton.ClickHandler() {
+
+						@Override
+						public void onButtonClick(
+								TalkInfoCollection tiCollection, TalkButton b) {
+							home();
+
+						}
+					});
+			tb.setBackgroundResource(R.drawable.picture_frame_control);
+			MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+			lp.setMargins(0, 0, 0, 0);
+			/* Add Button to row. */
+			viewGroup.addView(tb, lp);
+		}
+
+		TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
+		tb.setTalkInfo(new TalkInfo(getString(R.string.play), Color.WHITE,
+				R.drawable.play));
+		tb.updateData(null);
+		tb.setClickHandler(mHasDigitizer, tiCollection,
+				new TalkButton.ClickHandler() {
+
+					@Override
+					public void onButtonClick(TalkInfoCollection tiCollection,
+							TalkButton b) {
+						playText();
+
+					}
+				});
+
+		tb.setBackgroundResource(R.drawable.picture_frame_control);
+		MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		lp.setMargins(0, 0, 0, 0);
+		/* Add Button to row. */
+		viewGroup.addView(tb, lp);
+
+		tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
+		tb.setTalkInfo(new TalkInfo(getString(R.string.delete), Color.WHITE,
+				R.drawable.delete));
+		tb.updateData(null);
+		tb.setClickHandler(mHasDigitizer, tiCollection,
+				new TalkButton.ClickHandler() {
+
+					@Override
+					public void onButtonClick(TalkInfoCollection tiCollection,
+							TalkButton b) {
+						deleteText();
+
+					}
+				});
+		tb.setBackgroundResource(R.drawable.picture_frame_control);
+		lp = new ViewGroup.MarginLayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+		lp.setMargins(0, 0, 0, 0);
+		/* Add Button to row. */
+		viewGroup.addView(tb, lp);
 
 	}
 
@@ -334,6 +361,7 @@ public class MainActivity extends Activity implements OnInitListener,
 					mPanel = result;
 					showPanel(mPanel, null);
 				}
+
 			};
 
 		}.execute();
@@ -343,8 +371,8 @@ public class MainActivity extends Activity implements OnInitListener,
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_CODE_DATA_CHECK) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-				// success, create the TTS instance
-				mTts = new TextToSpeech(this, this);
+				// success
+
 			} else {
 				// missing data, install it
 				Intent installIntent = new Intent();
@@ -371,16 +399,6 @@ public class MainActivity extends Activity implements OnInitListener,
 	}
 
 	@Override
-	public void onInit(int status) {
-		if (mTts.isLanguageAvailable(Locale.FRANCE) >= 0) {
-			mTts.setLanguage(Locale.FRANCE);
-		} else {
-			// TOOD
-		}
-
-	}
-
-	@Override
 	public void onLoadComplete(SoundPool sp, int id, int status) {
 		if (BuildConfig.DEBUG) {
 			Log.v("open " + id + " " + status);
@@ -392,17 +410,17 @@ public class MainActivity extends Activity implements OnInitListener,
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (mTts != null) {
-			mTts.shutdown();
-		}
-	}
+	public void onButtonClick(TalkInfoCollection tiCollection, TalkButton tb) {
 
-	private void onButtonClick(final TalkInfoCollection tiCollection, View view) {
-		TalkButton tb = (TalkButton) view;
 		TalkInfo talkInfo = tb.mTalkInfo;
+
+		mTextStack.add(talkInfo);
+
 		if (talkInfo.text != null) {
+
+			if (talkInfo.child == null) {
+				mText.getText().append(talkInfo.text + " ");
+			}
 
 			if (talkInfo.isTextWav()) {
 				final String fullFilePath = mPlaRootDir + "/" + talkInfo.text;
@@ -429,7 +447,8 @@ public class MainActivity extends Activity implements OnInitListener,
 				HashMap<String, String> params = new HashMap<String, String>();
 
 				try {
-					mTts.speak(talkInfo.text, TextToSpeech.QUEUE_ADD, params);
+					((PlaphoonsApplication) getApplication()).mTts.speak(
+							talkInfo.text, mQueueMode, params);
 				} catch (Exception ex) {
 					// missing data, install it
 					Intent installIntent = new Intent();
@@ -454,4 +473,30 @@ public class MainActivity extends Activity implements OnInitListener,
 
 		}
 	}
+
+	private void home() {
+		mCurrentPlaFilename = null;
+		openPanel();
+	}
+
+	private void playText() {
+		HashMap<String, String> params = new HashMap<String, String>();
+
+		try {
+			((PlaphoonsApplication) getApplication()).mTts.speak(mText
+					.getText().toString(), mQueueMode, params);
+		} catch (Exception ex) {
+			// missing data, install it
+			Intent installIntent = new Intent();
+			installIntent
+					.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+			startActivity(installIntent);
+		}
+
+	}
+
+	private void deleteText() {
+		mText.setText("");
+	}
+
 }

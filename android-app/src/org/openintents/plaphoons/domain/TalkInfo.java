@@ -12,7 +12,7 @@ public class TalkInfo {
 	String link;
 	public int color;
 	Typeface font;
-	
+
 	public TalkInfoCollection child;
 	public String childFilename;
 

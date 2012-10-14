@@ -1,15 +1,13 @@
 package org.openintents.plaphoons.ui;
 
-import org.openintents.plaphoons.sample.R;
-
-import android.view.View;	
+import android.annotation.SuppressLint;
+import android.view.View;
 
 public abstract class HoneycombHelper {
+	@SuppressLint("NewApi")
 	static void fullScreen(MainActivity mainActivity) {
-		View v = mainActivity.findViewById(R.id.talker_layout);
-		v.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-		mainActivity.getActionBar().hide();
-
-
+		View rootView = mainActivity.getWindow().getDecorView();
+		rootView.setSystemUiVisibility(View.STATUS_BAR_VISIBLE);
+		rootView.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
 	}
 }

@@ -1,5 +1,6 @@
 package org.openintents.plaphoons.ui;
 
+import org.openintents.plaphoons.PlaphoonsApplication;
 import org.openintents.plaphoons.sample.R;
 
 import android.content.ActivityNotFoundException;
@@ -33,17 +34,19 @@ public class PreferencesActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.preferences);
 
 		Intent settingsIntent = new Intent();
-		settingsIntent.setData(Uri.parse("package:" + getPackageName()));				
-		settingsIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-		settingsIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.applications.InstalledAppDetails"));
+		settingsIntent.setData(Uri.parse("package:" + getPackageName()));
+		settingsIntent
+				.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+		settingsIntent.setComponent(new ComponentName("com.android.settings",
+				"com.android.settings.applications.InstalledAppDetails"));
 
 		addPreferencesFromIntent(settingsIntent);
-		
+
 		mPladirPref = (EditTextPreference) findPreference("pladir");
 		mPlafilePref = (EditTextPreference) findPreference("plafile");
 
 		String pladir = sp.getString("pladir", null);
-		if (pladir == null || pladir.length() == 0) {			
+		if (pladir == null || pladir.length() == 0) {
 			mPladirPref.setText(Environment.getExternalStorageDirectory()
 					.toString());
 		}
@@ -65,20 +68,35 @@ public class PreferencesActivity extends PreferenceActivity {
 							intent.setData(Uri.fromFile(Environment
 									.getExternalStorageDirectory()));
 						}
-						
+
 						try {
 							startActivityForResult(intent,
 									REQUEST_CODE_PICK_FILE);
 						} catch (ActivityNotFoundException e) {
-							Toast.makeText(PreferencesActivity.this, R.string.install_filemanger,
+							Toast.makeText(PreferencesActivity.this,
+									R.string.install_filemanger,
 									Toast.LENGTH_LONG).show();
 						}
-						
+
 						mPlaChoose.getDialog().cancel();
-						
+
 						return true;
 					}
-				});			
+				});
+
+		findPreference("locale").setOnPreferenceChangeListener(
+				new Preference.OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+
+						((PlaphoonsApplication) getApplication()).setLocale(
+								(String) newValue, true);
+						return true;
+					}
+				});
+
 	}
 
 	@Override
@@ -86,7 +104,8 @@ public class PreferencesActivity extends PreferenceActivity {
 		if (resultCode == RESULT_OK) {
 			String plaDir = data.getData().getPath();
 			String plaFile = data.getData().getLastPathSegment();
-			plaDir = plaDir.substring(0, plaDir.length() - plaFile.length() -1);
+			plaDir = plaDir
+					.substring(0, plaDir.length() - plaFile.length() - 1);
 
 			SharedPreferences sp = PreferenceManager
 					.getDefaultSharedPreferences(this);
@@ -94,10 +113,10 @@ public class PreferencesActivity extends PreferenceActivity {
 			editor.putString("pladir", plaDir);
 			editor.putString("plafile", plaFile);
 			editor.commit();
-			
-			mPladirPref.setText(plaDir);			
+
+			mPladirPref.setText(plaDir);
 			mPlafilePref.setText(plaFile);
 		}
-
 	}
+
 }

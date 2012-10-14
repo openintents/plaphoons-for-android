@@ -30,7 +30,8 @@ public class AboutDialogBuilder {
 		final SpannableString s = new SpannableString(aboutText);
 
 		// Set some padding
-		message.setPadding(5, 5, 5, 5);
+		message.setPadding(10, 10, 10, 10);
+
 		// Set up the final string
 		message.setText(versionString + "\n\n" + s);
 		// Now linkify the text

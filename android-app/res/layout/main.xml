@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.openintents.plaphoons.ui.widget.SquareGridLayout xmlns:android="http://schemas.android.com/apk/res/android"		
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.openintents.plaphoons.sample"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/talker_layout"
-    xmlns:util="http://schemas.android.com/apk/res/org.openintents.plaphoons.sample"
-	 util:size="6"    
-    >
-    
-</org.openintents.plaphoons.ui.widget.SquareGridLayout>
+    android:id="@+id/rel_layout" >
+
+    <EditText
+        android:id="@+id/text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:editable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        />
+
+    <org.openintents.plaphoons.ui.widget.SquareGridLayout
+        android:id="@+id/talker_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        app:size="6" >
+    </org.openintents.plaphoons.ui.widget.SquareGridLayout>
+
+</RelativeLayout>

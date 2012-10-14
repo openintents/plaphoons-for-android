@@ -16,9 +16,11 @@ public class PlaFileParser {
 	// NomFitxerSol){
 	Tools tool = new Tools();
 
-	public TalkInfoCollection parseFile(String filePath,  String encoding) throws IOException {		
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), encoding));
-		
+	public TalkInfoCollection parseFile(String filePath, String encoding)
+			throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				new FileInputStream(filePath), encoding));
+
 		TalkInfoCollection tiCollection = parseHeader(br);
 
 		TalkInfo talkInfo;
@@ -31,12 +33,11 @@ public class PlaFileParser {
 			if (talkInfo != null) {
 				tiCollection.infos[row][column] = talkInfo;
 				column++;
-				if (column >= tiCollection.columns){
+				if (column >= tiCollection.columns) {
 					column = 0;
 					row++;
 				}
 			}
-			
 
 			line = readLine(br);
 		}
@@ -48,6 +49,7 @@ public class PlaFileParser {
 		int columnCount;
 		int rowCount;
 		int error;
+		boolean showTextBox = false;
 
 		String FoNe = "NO";
 		String FoIt = "NO";
@@ -249,7 +251,7 @@ public class PlaFileParser {
 		if (tool.Copy(s, 1, 14).equals("BARRAMISSATGE=")) {
 			s = tool.Delete(s, 1, 14);
 			if (tool.Copy(s, 1, 1).equals("S")) {
-				boolean barramissatage = true;
+				showTextBox = true;
 			}
 		} else {
 			error = 23;
@@ -339,7 +341,7 @@ public class PlaFileParser {
 			return null;
 		}
 
-		return new TalkInfoCollection(rowCount, columnCount);
+		return new TalkInfoCollection(rowCount, columnCount, showTextBox);
 	}
 
 	private String readLine(BufferedReader r) throws IOException {

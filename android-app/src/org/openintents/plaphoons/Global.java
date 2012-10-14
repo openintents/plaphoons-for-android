@@ -1,6 +1,7 @@
 package org.openintents.plaphoons;
 
 import org.openintents.plaphoons.sample.R;
+
 /*
  * Projecte Fressa a JAVA
  * Global.java
@@ -21,16 +22,16 @@ import org.openintents.plaphoons.sample.R;
  */
 
 public class Global {
-    
-  //* 13 versi� PDA 
-  public static boolean NoEsPDA = true;
-  public static int MaximDeCaselles = 21;
-  //public static boolean NoEsPDA = false;
-  //public static int MaximDeCaselles = 4;
-  
-  public static int EsWindowsLookAndFeel = 0;
 
-  public Global() {
-  }
-    
+	// * 13 versi� PDA
+	public static boolean NoEsPDA = true;
+	public static int MaximDeCaselles = 21;
+	// public static boolean NoEsPDA = false;
+	// public static int MaximDeCaselles = 4;
+
+	public static int EsWindowsLookAndFeel = 0;
+
+	public Global() {
+	}
+
 }
