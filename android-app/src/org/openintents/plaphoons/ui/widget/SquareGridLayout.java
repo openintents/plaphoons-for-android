@@ -222,7 +222,7 @@ public class SquareGridLayout extends ViewGroup {
 	}
 
 	public void setSize(int rows, int columns) {
-		mRows = rows + 1;
+		mRows = rows;
 		mColumns = columns;
 		invalidate();
 

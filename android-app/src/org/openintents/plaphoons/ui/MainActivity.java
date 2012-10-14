@@ -159,7 +159,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
 		/* Find viewGroup defined in main.xml */
 		SquareGridLayout viewGroup = (SquareGridLayout) findViewById(R.id.talker_layout);
-		viewGroup.setSize(tiCollection.rows, tiCollection.columns);
+		viewGroup.setSize(tiCollection.rows + (tiCollection.showTextBox ? 1 : 0), tiCollection.columns);
 
 		viewGroup.removeAllViews();
 		LayoutInflater li = getLayoutInflater();
@@ -189,10 +189,35 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 			}
 		}
 
-		if (tiCollection.columns > 2) {
+		if (tiCollection.showTextBox) {
+			if (tiCollection.columns > 2) {
+				TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton,
+						null);
+				tb.setTalkInfo(new TalkInfo(getString(R.string.home),
+						Color.WHITE, R.drawable.home));
+				tb.updateData(null);
+				tb.setClickHandler(mHasDigitizer, tiCollection,
+						new TalkButton.ClickHandler() {
+
+							@Override
+							public void onButtonClick(
+									TalkInfoCollection tiCollection,
+									TalkButton b) {
+								home();
+
+							}
+						});
+				tb.setBackgroundResource(R.drawable.picture_frame_control);
+				MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+						LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				lp.setMargins(0, 0, 0, 0);
+				/* Add Button to row. */
+				viewGroup.addView(tb, lp);
+			}
+
 			TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
-			tb.setTalkInfo(new TalkInfo(getString(R.string.home), Color.WHITE,
-					R.drawable.home));
+			tb.setTalkInfo(new TalkInfo(getString(R.string.play), Color.WHITE,
+					R.drawable.play));
 			tb.updateData(null);
 			tb.setClickHandler(mHasDigitizer, tiCollection,
 					new TalkButton.ClickHandler() {
@@ -200,61 +225,39 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 						@Override
 						public void onButtonClick(
 								TalkInfoCollection tiCollection, TalkButton b) {
-							home();
+							playText();
 
 						}
 					});
+
 			tb.setBackgroundResource(R.drawable.picture_frame_control);
 			MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 			lp.setMargins(0, 0, 0, 0);
 			/* Add Button to row. */
 			viewGroup.addView(tb, lp);
+
+			tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
+			tb.setTalkInfo(new TalkInfo(getString(R.string.delete),
+					Color.WHITE, R.drawable.delete));
+			tb.updateData(null);
+			tb.setClickHandler(mHasDigitizer, tiCollection,
+					new TalkButton.ClickHandler() {
+
+						@Override
+						public void onButtonClick(
+								TalkInfoCollection tiCollection, TalkButton b) {
+							deleteText();
+
+						}
+					});
+			tb.setBackgroundResource(R.drawable.picture_frame_control);
+			lp = new ViewGroup.MarginLayoutParams(LayoutParams.FILL_PARENT,
+					LayoutParams.FILL_PARENT);
+			lp.setMargins(0, 0, 0, 0);
+			/* Add Button to row. */
+			viewGroup.addView(tb, lp);
 		}
-
-		TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
-		tb.setTalkInfo(new TalkInfo(getString(R.string.play), Color.WHITE,
-				R.drawable.play));
-		tb.updateData(null);
-		tb.setClickHandler(mHasDigitizer, tiCollection,
-				new TalkButton.ClickHandler() {
-
-					@Override
-					public void onButtonClick(TalkInfoCollection tiCollection,
-							TalkButton b) {
-						playText();
-
-					}
-				});
-
-		tb.setBackgroundResource(R.drawable.picture_frame_control);
-		MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		lp.setMargins(0, 0, 0, 0);
-		/* Add Button to row. */
-		viewGroup.addView(tb, lp);
-
-		tb = (TalkButton) li.inflate(R.layout.talkbutton, null);
-		tb.setTalkInfo(new TalkInfo(getString(R.string.delete), Color.WHITE,
-				R.drawable.delete));
-		tb.updateData(null);
-		tb.setClickHandler(mHasDigitizer, tiCollection,
-				new TalkButton.ClickHandler() {
-
-					@Override
-					public void onButtonClick(TalkInfoCollection tiCollection,
-							TalkButton b) {
-						deleteText();
-
-					}
-				});
-		tb.setBackgroundResource(R.drawable.picture_frame_control);
-		lp = new ViewGroup.MarginLayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT);
-		lp.setMargins(0, 0, 0, 0);
-		/* Add Button to row. */
-		viewGroup.addView(tb, lp);
-
 	}
 
 	@Override
