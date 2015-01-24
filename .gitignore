@@ -1,3 +1,9 @@
-android-app/bin
-android-app/gen
+build
+.gradle
+.idea
+.navigation
+*.iml
+local.properties
+.classpath
+.project
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name">Plaphoons</string>
+    <string name="app_name_settings">Plaphoons Preferences</string>
     <string name="preference_application">Preferences</string>
     <string name="preference_showapps_title">Show apps</string>
     <string name="preference_showapps_summary">Add a page with apps</string>
@@ -24,7 +25,9 @@
     <string name="preference_queuemodedrop_summary">If checked, queued text is dropped</string>
     <string name="preference_playcontrolonly_title">Speak only on Play button</string>
     <string name="preference_playcontrolonly_summary">If checked, symbols are not played, only the written text when pressing play.</string>
-    
+    <string name="preference_showtextasimages_title">Show text as images</string>
+    <string name="preference_showtextasimages_summary">Images are shown instead of letters</string>
+
     <string name="preference_android_settings">Android Settings</string>
     <string name="preference_appsettings_title">App settings Plaphoons</string>
     <string name="preference_appsettings_summary">Change Default launcher</string>
