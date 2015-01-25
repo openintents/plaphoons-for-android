@@ -2,6 +2,7 @@ package org.openintents.preferences;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 import org.openintents.plaphoons.PlaphoonsApplication;
 
@@ -35,7 +36,9 @@ public class LocalePreference extends ListPreference {
 			int count = 0;
 			for (int i = 0; i < length; i++) {
 				Locale l = Locale.getAvailableLocales()[i];
-
+                if (invalidLocale(l)){
+                    continue;
+                }
 				switch (tts.isLanguageAvailable(l)) {
 				case TextToSpeech.LANG_AVAILABLE:
 				case TextToSpeech.LANG_COUNTRY_AVAILABLE:
@@ -58,7 +61,17 @@ public class LocalePreference extends ListPreference {
 
 	}
 
-	@Override
+    private static boolean invalidLocale(Locale l) {
+        try {
+            l.getISO3Country();
+            return false;
+        } catch (MissingResourceException e) {
+            return true;
+        }
+
+    }
+
+    @Override
 	protected void onPrepareDialogBuilder(Builder builder) {
 		setEntryValues(entryValues);
 		setEntries(entries);

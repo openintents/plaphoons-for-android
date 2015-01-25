@@ -103,7 +103,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
     private FlowLayout mTextAsImages;
     private boolean mShowTextAsImages;
     private WebView mWebView;
-    private AbstractCollection<PrintJob> mPrintJobs;
+    private AbstractCollection<PrintJob> mPrintJobs = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -165,7 +165,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
         Log.v("show " + tiCollection);
 
 
-        if (tiCollection.showTextBox){
+        if (tiCollection.showTextBox) {
             mText.setVisibility(mShowTextAsImages ? View.GONE : View.VISIBLE);
             mTextAsImages.setVisibility(mShowTextAsImages ? View.VISIBLE : View.GONE);
         } else {
@@ -205,7 +205,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
             }
         }
 
-        if (true || tiCollection.showTextBox) {
+        if (tiCollection.showTextBox) {
             if (tiCollection.columns > 2) {
                 TalkButton tb = (TalkButton) li.inflate(R.layout.talkbutton,
                         null);
@@ -376,6 +376,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
                     }
                 }
 
+                panel.showTextBox = true;
                 return panel;
             }
 
@@ -440,12 +441,12 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
         TalkInfo talkInfo = tb.mTalkInfo;
 
-        mTextStack.add(talkInfo);
-
         if (talkInfo.text != null) {
 
-            if (talkInfo.child == null) {
+            if (talkInfo.child == null && (talkInfo.childFilename == null
+                    || talkInfo.childFilename.length() == 0)) {
                 mText.getText().append(talkInfo.text + " ");
+                mTextStack.add(talkInfo);
                 TalkButton talkButton = (TalkButton) getLayoutInflater().inflate(R.layout.talkbutton,
                         null);
                 talkButton.setTalkInfo(talkInfo);
@@ -539,19 +540,24 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
             @Override
             public void onPageFinished(WebView view, String url) {
                 Log.v("page finished loading " + url);
-                //createWebPrintJob(view);
+                createWebPrintJob(view);
                 mWebView = null;
             }
         });
 
         // Generate an HTML document on the fly:
-        String htmlDocument = "<html><body>";
+        String htmlDocument = "<html><body><div style=\"overflow:auto\">";
+
         for (int i = 0; i < mTextAsImages.getChildCount(); i++) {
             TalkButton btn = (TalkButton) mTextAsImages.getChildAt(i);
-            htmlDocument +="<img src=\""+btn.mTalkInfo.drawablePath+"\"/>";
+            htmlDocument += "<div style=\"height:150px;width:150px;float:left;\">";
+            htmlDocument += "<img style=\"max-height:100%;max-width:100%;\" src=\"file://" + mPlaRootDir + "/" + btn.mTalkInfo.drawablePath + "\"/>";
+            htmlDocument += "</div>";
+
         }
-        htmlDocument += "<p>"+  mText.getText() +"</p>";
+        htmlDocument += "</div><p>" + mText.getText() + "</p>";
         htmlDocument += "</body></html>";
+        Log.v(htmlDocument);
         webView.loadDataWithBaseURL(mPlaRootDir, htmlDocument, "text/HTML", "UTF-8", null);
 
         // Keep a reference to WebView object until you pass the PrintDocumentAdapter
