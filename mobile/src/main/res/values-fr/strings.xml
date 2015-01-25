@@ -28,5 +28,7 @@
     <string name="install_filemanger">Gestionnaire de fichiers manquant! Réinstallez depuis le market</string>
     <string name="parsing_pla_file_failed">Erreur lors de l’analyse syntaxique du fichier .pla</string>
     <string name="about">Developé par Friedger Müffke\nbasé sur Plaphoons par Fressa Project(http://fressa.blogspot.com).\nCode des source disponible à https://github.com/openintents/plaphoons-for-android.\nContact support@openintents.org</string>
-    
+    <string name="app_name_settings">Plaph. Paramètres</string>
+    <string name="delete">Effacer</string>
+
 </resources>

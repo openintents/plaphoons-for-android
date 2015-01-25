@@ -29,5 +29,7 @@
     <string name="install_filemanger">Dateimanager fehlt! Bitte aus dem Market installieren</string>
     <string name="parsing_pla_file_failed">Parsen der .pla Datei fehlgeschlagen.</string>
     <string name="about">Entwickelt von Friedger Müffke\nbasierend auf Plaphoons des Fressa Projekts(http://fressa.blogspot.com).\nQuellcode ist verfügbar auf https://github.com/openintents/plaphoons-for-android.\nKontakt support@openintents.org</string>
-    
+    <string name="app_name_settings">Plaph. Einstellungen</string>
+    <string name="delete">Löschen</string>
+
 </resources>

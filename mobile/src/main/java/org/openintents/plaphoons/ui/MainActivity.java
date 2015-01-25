@@ -77,23 +77,20 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
     private static final int NOTIFICATION_DEFAULT = 1;
     private static final String ACTION_DIALOG = "org.openintents.plaphoons.action.DIALOG";
-
+    private static final int REQUEST_CODE_DATA_CHECK = 1000;
+    private static final int REQUEST_CODE_PREFERENCES = 2000;
+    protected String mEncoding;
+    protected boolean mHasDigitizer;
     private View mActionBarView;
     private String[] mToggleLabels = {"Show Titles", "Hide Titles"};
     private int mLabelIndex = 1;
-
     private TalkInfoCollection mPanel;
-    private static final int REQUEST_CODE_DATA_CHECK = 1000;
-    private static final int REQUEST_CODE_PREFERENCES = 2000;
-
     private PlaFileParser mParser;
     private String mPlaRootDir;
     private String mPlaFilename;
     private String mCurrentPlaFilename;
     private boolean mUseSample;
     private ArrayList<String> mParentStack = new ArrayList<>();
-    protected String mEncoding;
-    protected boolean mHasDigitizer;
     private SoundPool mSoundPool;
     private int mPendingSound;
     private EditText mText;
@@ -104,6 +101,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
     private boolean mShowTextAsImages;
     private WebView mWebView;
     private AbstractCollection<PrintJob> mPrintJobs = new ArrayList<>();
+    private boolean mPrintText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,7 +155,8 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
         mQueueMode = (prefs.getBoolean("queuemodedrop", true) ? TextToSpeech.QUEUE_FLUSH
                 : TextToSpeech.QUEUE_ADD);
         mPlayControlOnly = prefs.getBoolean("playcontrolonly", false);
-        mShowTextAsImages = prefs.getBoolean("showtextasimages", true);
+        mShowTextAsImages = prefs.getBoolean("showtextasimages", false);
+        mPrintText = prefs.getBoolean("printtext", false);
     }
 
     public void showPanel(final TalkInfoCollection tiCollection,
@@ -443,8 +442,8 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
         if (talkInfo.text != null) {
 
-            if (talkInfo.child == null && (talkInfo.childFilename == null
-                    || talkInfo.childFilename.length() == 0)) {
+            if (talkInfo.child == null || talkInfo.childFilename == null
+                    || talkInfo.childFilename.length() == 0) {
                 mText.getText().append(talkInfo.text + " ");
                 mTextStack.add(talkInfo);
                 TalkButton talkButton = (TalkButton) getLayoutInflater().inflate(R.layout.talkbutton,
@@ -525,8 +524,9 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
                     .setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
             startActivity(installIntent);
         }
-        printText();
-
+        if (mPrintText && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            printText();
+        }
     }
 
     private void printText() {

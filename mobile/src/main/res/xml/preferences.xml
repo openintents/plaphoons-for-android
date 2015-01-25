@@ -66,6 +66,12 @@
             android:title="@string/preference_showtextasimages_title"
             />
         <CheckBoxPreference
+            android:key="printtext"
+            android:defaultValue="false"
+            android:summary="@string/preference_printtext_summary"
+            android:title="@string/preference_printtext_title"
+            />
+        <CheckBoxPreference
             android:key="queuemodedrop"
             android:defaultValue="true"
             android:summary="@string/preference_queuemodedrop_summary"

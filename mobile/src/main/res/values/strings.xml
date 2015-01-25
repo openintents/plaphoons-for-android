@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name">Plaphoons</string>
-    <string name="app_name_settings">Plaphoons Preferences</string>
+    <string name="app_name_settings">Plaph. Settings</string>
     <string name="preference_application">Preferences</string>
     <string name="preference_showapps_title">Show apps</string>
     <string name="preference_showapps_summary">Add a page with apps</string>
@@ -27,6 +27,8 @@
     <string name="preference_playcontrolonly_summary">If checked, symbols are not played, only the written text when pressing play.</string>
     <string name="preference_showtextasimages_title">Show text as images</string>
     <string name="preference_showtextasimages_summary">Images are shown instead of letters</string>
+    <string name="preference_printtext_title">Print text</string>
+    <string name="preference_printtext_summary">When pressing Play the text is also send to a printer (Android 4.4+ only)</string>
 
     <string name="preference_android_settings">Android Settings</string>
     <string name="preference_appsettings_title">App settings Plaphoons</string>
