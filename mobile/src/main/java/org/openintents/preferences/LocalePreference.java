@@ -1,18 +1,15 @@
 package org.openintents.preferences;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.MissingResourceException;
-
-import org.openintents.plaphoons.PlaphoonsApplication;
-
 import android.app.AlertDialog.Builder;
-import android.app.Application;
 import android.content.Context;
 import android.preference.ListPreference;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 public class LocalePreference extends ListPreference {
 
@@ -36,7 +33,7 @@ public class LocalePreference extends ListPreference {
 			int count = 0;
 			for (int i = 0; i < length; i++) {
 				Locale l = Locale.getAvailableLocales()[i];
-                if (invalidLocale(l)){
+                if (invalidLocale(tts, l)){
                     continue;
                 }
 				switch (tts.isLanguageAvailable(l)) {
@@ -61,15 +58,18 @@ public class LocalePreference extends ListPreference {
 
 	}
 
-    private static boolean invalidLocale(Locale l) {
+    private static boolean invalidLocale(TextToSpeech tts, Locale l) {
         try {
             l.getISO3Country();
+			tts.isLanguageAvailable(l);
             return false;
         } catch (MissingResourceException e) {
             return true;
-        }
+		} catch (IllegalArgumentException e) {
+			return true;
+		}
 
-    }
+	}
 
     @Override
 	protected void onPrepareDialogBuilder(Builder builder) {
