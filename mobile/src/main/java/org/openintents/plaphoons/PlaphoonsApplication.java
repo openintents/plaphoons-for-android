@@ -1,18 +1,17 @@
 package org.openintents.plaphoons;
 
-import java.util.Locale;
-
-import org.openintents.plaphoons.sample.R;
-import org.openintents.preferences.LocalePreference;
-
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.widget.Toast;
+
+import java.util.Locale;
+
+import org.openintents.plaphoons.sample.R;
+import org.openintents.preferences.LocalePreference;
 
 public class PlaphoonsApplication extends Application implements OnInitListener {
 
@@ -35,8 +34,12 @@ public class PlaphoonsApplication extends Application implements OnInitListener 
 
 	@Override
 	public void onInit(int status) {
-		LocalePreference.init(this.mTts);
-		setLocaleFromPerefences();
+		if (status == TextToSpeech.SUCCESS) {
+			LocalePreference.init(this.mTts);
+			setLocaleFromPerefences();
+		} else {
+			Toast.makeText(getApplicationContext(), "Error while initializing TextToSpeech Engine", Toast.LENGTH_LONG).show();
+		}
 	}
 
 	private void setLocaleFromPerefences() {

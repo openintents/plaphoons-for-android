@@ -27,12 +27,14 @@ public class LocalePreference extends ListPreference {
 	public static void init(TextToSpeech tts) {
 		if (entries == null) {
 			int length = Locale.getAvailableLocales().length;
-			ArrayList<CharSequence> entryList = new ArrayList<CharSequence>();
-			ArrayList<CharSequence> entryValueList = new ArrayList<CharSequence>();
+			ArrayList<CharSequence> entryList = new ArrayList<>();
+			ArrayList<CharSequence> entryValueList = new ArrayList<>();
 
 			int count = 0;
+			Locale l;
+			String country;
 			for (int i = 0; i < length; i++) {
-				Locale l = Locale.getAvailableLocales()[i];
+				l = Locale.getAvailableLocales()[i];
                 if (invalidLocale(tts, l)){
                     continue;
                 }
@@ -40,7 +42,7 @@ public class LocalePreference extends ListPreference {
 				case TextToSpeech.LANG_AVAILABLE:
 				case TextToSpeech.LANG_COUNTRY_AVAILABLE:
 				case TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE:
-					String country = l.getDisplayCountry(l);
+					country = l.getDisplayCountry(l);
 					if (TextUtils.isEmpty(country)) {
 						entryList.add(l.getDisplayLanguage(l));
 					} else {
@@ -51,7 +53,6 @@ public class LocalePreference extends ListPreference {
 					count++;
 				}
 			}
-
 			entries = entryList.toArray(new CharSequence[count]);
 			entryValues = entryValueList.toArray(new CharSequence[count]);
 		}

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile "com.android.support:appcompat-v7:21.0.3"
+    compile "com.android.support:appcompat-v7:23.0.1"
 }
 
 android {
@@ -11,8 +11,8 @@ android {
 
     defaultConfig {
         applicationId "org.openintents.plaphoons.sample"
-        versionCode 13
-        versionName "2.1.0"
+        versionCode 14
+        versionName "2.1.1"
         minSdkVersion 8
         targetSdkVersion 23
     }
