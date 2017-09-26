@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="app_name">Plaphoons</string>
+    <string name="app_name_settings">Configurações Plaph.</string>
+    <string name="preference_application">Preferências</string>
+    <string name="preference_showapps_title">Mostrar apps</string>
+    <string name="preference_showapps_summary">Adicionar página com apps</string>
+    <string name="preference_plafile_title">Nome do arquivo .pla</string>
+    <string name="preference_plafile_summary">sem caminho</string>
+    <string name="preference_pladir_title">Caminho para o arquivo .pla</string>
+    <string name="preference_pladir_summary">deixe vazio para o valor padrão (i.é. diretório raíz no cartãoSD)</string>
+    <string name="preference_plachoose_title">Escolher arquivo</string>
+    <string name="preference_plachoose_summary">usando um gerenciador de arquivos como o OI Filemanager</string>    
+    <string name="preference_usesample_title">Usar exemplo</string>
+    <string name="preference_usesample_summary">que está pré-instalado</string>
+    <string name="preference_encoding_title">Codificação de Caracteres</string>
+    <string name="preference_encoding_summary">Altere apenas se há problemas 
+com certas letras (padrão: iso-8859-1, alternativas: utf8)</string>
+    <string name="preference_file">Usar arquivo</string>   
+    <string name="preference_extended">Configurações estendidas</string> 
+    
+    <string name="preference_locale_title">Idioma</string>
+    <string name="preference_locale_summary">Escolha um idioma para sobrescrever a língua padrão do dispositivo</string>
+    
+    <string name="preference_queuemodedrop_title">Remover texto de fala inacabado</string>
+    <string name="preference_queuemodedrop_summary">Se marcado, o texto na consulta será removido</string>
+    <string name="preference_playcontrolonly_title">Falar apenas no botão Play</string>
+    <string name="preference_playcontrolonly_summary">Se marcado, símbolos não serão reproduzidos, apenas o texto escrito ao apertar para tocar.</string>
+    <string name="preference_showtextasimages_title">Mostrar texto como imagens</string>
+    <string name="preference_showtextasimages_summary">Imagens são mostradas ao invés de letras</string>
+    <string name="preference_printtext_title">Imprimir texto</string>
+    <string name="preference_printtext_summary">Ao tocar em Play o texto também é enviado à impressora (Apenas Android 4.4+)</string>
+
+    <string name="preference_android_settings">Configurações do Android</string>
+    <string name="preference_appsettings_title">Configurações do app Plaphoons</string>
+    <string name="preference_appsettings_summary">Alterar launcher padrão</string>
+    <string name="preference_ttssettings_title">Configurações Text-To-Speech</string>
+    <string name="preference_ttssettings_summary">Alterar configurações e motor TTS</string>
+    
+    <string name="menu_preferences">Preferências</string>
+    <string name="menu_launcher">Sair</string>
+    <string name="menu_about">Sobre</string>
+    <string name="choose_launcher">Escolha por favor</string>
+    <string name="install_filemanger">Gerenciador de arquivos faltando! Instale algum da Play Store</string>
+    <string name="parsing_pla_file_failed">Falha ao processar arquivo .pla.</string>
+    <string name="about">Desenvolvido por Friedger Müffke\nbaseado no Plaphoons por Fressa Project(http://fressa.blogspot.com).\nCódigo fonte disponível em https://github.com/openintents/plaphoons-for-android.\nContato support@openintents.org</string>
+    
+    <string name="home">Início</string>
+    <string name="play">Play</string>
+    <string name="delete">Excluir</string>
+    <string name="language_changed">Idioma alterado para %s</string>
+</resources>
