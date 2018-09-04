@@ -16,6 +16,7 @@
 
 package org.openintents.plaphoons.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -113,9 +114,8 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
 
         setContentView(R.layout.main);
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            HoneycombHelper.fullScreen(this);
-        }
+        HoneycombHelper.fullScreen(this);
+
 
         mHasDigitizer = getPackageManager().hasSystemFeature(
                 "android.hardware.touchscreen.pen");
@@ -172,7 +172,7 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
             mText.setVisibility(View.GONE);
         }
 
-		/* Find viewGroup defined in main.xml */
+        /* Find viewGroup defined in main.xml */
         SquareGridLayout viewGroup = (SquareGridLayout) findViewById(R.id.talker_layout);
         viewGroup.setSize(tiCollection.rows + (tiCollection.showTextBox ? 1 : 0), tiCollection.columns);
 
@@ -546,25 +546,26 @@ public class MainActivity extends Activity implements OnLoadCompleteListener,
         });
 
         // Generate an HTML document on the fly:
-        String htmlDocument = "<html><body><div style=\"overflow:auto\">";
+        StringBuilder htmlDocument = new StringBuilder("<html><body><div style=\"overflow:auto\">");
 
         for (int i = 0; i < mTextAsImages.getChildCount(); i++) {
             TalkButton btn = (TalkButton) mTextAsImages.getChildAt(i);
-            htmlDocument += "<div style=\"height:150px;width:150px;float:left;\">";
-            htmlDocument += "<img style=\"max-height:100%;max-width:100%;\" src=\"file://" + mPlaRootDir + "/" + btn.mTalkInfo.drawablePath + "\"/>";
-            htmlDocument += "</div>";
+            htmlDocument.append("<div style=\"height:150px;width:150px;float:left;\">");
+            htmlDocument.append("<img style=\"max-height:100%;max-width:100%;\" src=\"file://")
+                    .append(mPlaRootDir).append("/").append(btn.mTalkInfo.drawablePath).append("\"/>");
+            htmlDocument.append("</div>");
 
         }
-        htmlDocument += "</div><p>" + mText.getText() + "</p>";
-        htmlDocument += "</body></html>";
-        Log.v(htmlDocument);
-        webView.loadDataWithBaseURL(mPlaRootDir, htmlDocument, "text/HTML", "UTF-8", null);
+        htmlDocument.append("</div><p>").append(mText.getText()).append("</p>");
+        htmlDocument.append("</body></html>");
+        webView.loadDataWithBaseURL(mPlaRootDir, htmlDocument.toString(), "text/HTML", "UTF-8", null);
 
         // Keep a reference to WebView object until you pass the PrintDocumentAdapter
         // to the PrintManager
         mWebView = webView;
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void createWebPrintJob(WebView webView) {
 
         // Get a PrintManager instance
